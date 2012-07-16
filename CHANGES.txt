@@ -1,0 +1,97 @@
+HSearch Change Log
+Release 0.91 - 
+
+Term  |Repository(Wikipedia) |   Found   |      Response(Sec)
+------------------------------------------------------------------
+                                            		Average
+------------------------------------------------------------------
+keonjhar  |     100M             |   1270   |    1.2Sec
+hill      |     100M             |   1.6M   |    7.9Sec
+------------------------------------------------------------------
+
+Release 0.90 - Mon Jan 18 01:29:00 IST 2011
+  INCOMPATIBLE CHANGES
+  ------------
+  HSEARCH-019 : Moved to support HBase 0.90 version
+
+  BUG FIXES
+  ------------
+  HSEARCH-013 : Upgrade to hbase 0.90 version
+  HSEARCH-018 : Boundary value Exception during teaser formation.
+
+  NEW FEATURES
+  ------------
+  HSEARCH-015 : Compression is configurable for Meta data, Inverted Index data, Teaser data and IDMapping data.  
+  HSEARCH-017 : The search can be scoped inside the given list of buckets
+  
+  OPTIMIZATIONS
+  ------------
+HSearch performance on Wikipedia pages as downloaded using the data dump.
+Term  |Repository(Wikipedia) |   Found   |      Response(ms)
+------------------------------------------------------------------
+                                            1st Time | 2nd Time
+------------------------------------------------------------------
+usa   |     1.1M             |   64829   |    1161   |    600
+india |     1.1M             |   58377   |    340    |    326
+hill  |     1.1M             |   48810   |    658    |    430
+------------------------------------------------------------------
+usa   |     5M               |   172883   |    2380   |    1258
+india |     5M               |   102712   |    557    |    490
+hill  |     5M               |   108104   |    1147    |   744
+------------------------------------------------------------------
+usa   |     10M              |   283829   |    2810  |    1756
+india |     10M              |   172787   |    781   |    629
+hill  |     10M              |   159029   |    1410  |   1076
+------------------------------------------------------------------
+
+  HSEARCH-014 : Implemented parallel Get operation for faster access. 
+  HSEARCH-016 : Dynamic ranking and filtering is configurable.
+  HSEARCH-019 : Filtered data is passed from region server to client with no header information, so saving network bytes.
+  HSEARCH-020 : Object reuse to optimize the performance.
+  
+  KNOWN BUGS
+  ------------
+
+Release 0.89.1 - Mon Dec 28 20:38:05 PDT 2010
+  
+  INCOMPATIBLE CHANGES
+  ------------
+
+  BUG FIXES
+  ------------
+  	HSEARCH-001 Fix all JUNit test cases.
+  	HSEARCH-002 The search was reporting no records found for search word "Jersey" having two documents inside index with one containing word "Jersey" and other "Jumaih". 
+	HSEARCH-003 Null value exception in DocWeight. 
+	HSEARCH-004 Null pointer exceptions in DocTeaser are fixed.
+
+
+  NEW FEATURES
+  ------------
+  	HSEARCH-005 Crawler Service added with Tab and XML crawling Facility
+  	HSEARCH-006 TestAll is added which runs all test cases for Random values, Boundary Values, Multiple iteration runs with response tine recording and testing with Special characters.
+  	HSEARCH-007 Writing to index is always through the "Write Ahead Log(WAL)" for increased data reliability.
+	HSEARCH-008 UrlShortner configuration is moved from local file to HBase configuration table.
+  	HSEARCH-009 Freebase performance benchamarking stack is created.  The perforamance results are:
+
+Indexing Speed : 
+1Million Freebase Location records  indexed at Speed 0.8ms / Record.
+
+Search Speed : 
+Term		Found Documents	1stTime(ms)	2nd Time(ms)	
+hill		7143		823		599
+india		6695		961		508
+bridge		6236		911		526
+Street		3376		994		510
+Road		2631		856		500
+Pacific Time	42455		1240		1190
+------------------------------------------------------------
+
+
+  OPTIMIZATIONS
+  ------------
+  	HSEARCH-010 Lists and Maps are getting reused.
+	HSEARCH-011 After indexing all created objects are cleaned .
+
+  KNOWN BUGS
+  ------------
+  	HSEARCH-012 Sorting fails at high amount of data matching ( > 100000 ).

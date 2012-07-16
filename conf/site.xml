@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<configuration>
+
+	<property>
+	  <name>plugin.folders</name>
+	  <value>services</value>
+	  <description>Number of revisions kept for the record field</description>
+	</property>
+
+	<property>
+	  <name>record_rev</name>
+	  <value>1</value>
+	  <description>Number of revisions kept for the record field</description>
+	</property>
+
+	<property>
+	  <name>services</name>
+	  <value>com.bizosys.hsearch.schema.SchemaManager,com.bizosys.hsearch.index.IndexService,com.bizosys.hsearch.dictionary.DictionaryManager,com.bizosys.hsearch.inpipe.util.StopwordManager,com.bizosys.hsearch.util.HSearchHealthMonitor</value>
+	  <description>These are customized services bundled inside the package; 
+	  Not in plugin folders.</description>
+	</property>
+
+	<property>
+	  <name>inpipes</name>
+	  <value></value>
+	  <description>Comma Separated Input Pipe List</description>
+	</property>
+
+	<property>
+	  <name>outpipes</name>
+	  <value></value>
+	  <description>Comma Separated Output Pipe List</description>
+	</property>
+	
+	<property>
+	  <name>stemming</name>
+	  <value>true</value>
+	  <description>Enable the stemming</description>
+	</property>
+	
+	<property>
+	  <name>dictionary.refresh</name>
+	  <value>10</value>
+	  <description>Dictionary Refresh period in 10 minutes</description>
+	</property>
+	
+	<property>
+	  <name>dictionary.merge.words</name>
+	  <value>1000</value>
+	  <description>Words will be separed by Tab and kept as a line</description>
+	</property>
+	
+	<property>
+	  <name>dictionary.spellcheck.enabled</name>
+	  <value>true</value>
+	  <description>This will disable spellcheck and fuzzy search on dictionary.</description>
+	</property>	
+	
+	<property>
+	  <name>dictionary.page.Size</name>
+	  <value>1000</value>
+	  <description>How many words come as a page for dictionry browsing.</description>
+	</property>
+	
+	<property>
+	  <name>index.documents.merge</name>
+	  <value>10001</value>
+	  <description>How many documents should be merged in the index</description>
+	</property>	
+	
+	<property>
+	  <name>preview.merge</name>
+	  <value>true</value>
+	  <description>
+	  	This merges all documents as of index merge factor
+	  	Do not change to false. We have some ongoing issues with single writes.
+	  	</description>
+	</property>	
+	
+	
+	<property>
+	  <name>stopword.refresh</name>
+	  <value>10</value>
+	  <description>10 Minutes Interval.</description>
+	</property>	
+	
+	<property>
+	  <name>meta.fetch.limit</name>
+	  <value>100</value>
+	  <description>Number of documents fetched during Meta checking.</description>
+	</property>	
+	
+	<property>
+	  <name>page.fetch.limit</name>
+	  <value>10</value>
+	  <description>Documents Retrieved per page.</description>
+	</property>	
+	
+	<property>
+	  <name>teaser.words.count</name>
+	  <value>100</value>
+	  <description>What is the size of the teaser.</description>
+	</property>	
+	
+	<property>
+	  <name>dictionary.cache.size</name>
+	  <value>50000</value>
+	  <description>For a buffered dictionary size, the cache limit</description>
+	</property>	
+
+	<property>
+	  <name>meta.compression</name>
+	  <value>none</value>
+	  <description>Pick any one of 3 gz, lzo, none</description>
+	</property>
+
+	<property>
+	  <name>teaser.compression</name>
+	  <value>none</value>
+	  <description>Pick any one of 3 gz, lzo, none</description>
+	</property>
+
+	<property>
+	  <name>content.compression</name>
+	  <value>none</value>
+	  <description>Pick any one of 3 gz, lzo, none</description>
+	</property>
+
+	<property>
+	  <name>idmapping.compression</name>
+	  <value>none</value>
+	  <description>Pick any one of 3 gz, lzo, none</description>
+	</property>
+	
+	<property>
+	  <name>invertindex.compression</name>
+	  <value>none</value>
+	  <description>Pick any one of 3 gz, lzo, none</description>
+	</property>
+
+	<property>
+	  <name>idmapping.enable</name>
+	  <value>true</value>
+	  <description>Maintains the mapping between HSearch Unique document Id to the original document Id</description>
+	</property>
+	
+	<property>
+	  <name>dynamic.ranking.enable</name>
+	  <value>true</value>
+	  <description>Enable dynamic ranking computation.</description>
+	</property>
+	
+	<property>
+	  <name>parallelization</name>
+	  <value>true</value>
+	  <description>Enable Parallelization for sequential access queries.</description>
+	</property>
+	
+
+</configuration>

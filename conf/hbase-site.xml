@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+  <property>
+    <name>hbase.regionserver.logroll.period</name>
+    <value>1048576</value>
+    <description>Period at which we will roll the commit log.</description>
+  </property>
+
+  <property>
+    <name>hbase.hregion.memstore.flush.size</name>
+    <value>67108864</value>
+    <description>
+      Default value is 67108864.
+      This is the mem store mentioned earlier. Once the store reaches the configured size, it is flushed to
+	  disk. Setting this value lower gives you your biggest bang for saving memory, as it forces data to disk 
+	  sooner, and uses less memory overall.
+    </description>
+  </property>
+
+  <property>
+    <name>hbase.hstore.compactionThreshold</name>
+    <value>2</value>
+    <description>Default: 3 This setting controls how often a "mem store" file will be compacted into a full region file. The mem store file is created when a mem store is flushed to disk. Setting this to a lower value, increases the number of compactions you have, but it decreases the amount of time it takes to compact. During my testing, my clients were timing out during compactions, so this setting helped to prevent that
+   </description>
+  </property>   
+
+  <property>
+    <name>hfile.min.blocksize.size</name>
+    <value>65536</value>
+    <description>Minimum store file block size.  The smaller you make this, the
+    bigger your index and the less you fetch on a random-access.  Set size down
+    if you have small cells and want faster random-access of individual cells.
+    </description>
+  </property>
+    
+</configuration>

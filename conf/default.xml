@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<configuration>
+
+	<property>
+	  <name>plugin.folders</name>
+	  <value>services</value>
+	  <description>Directories where plugins are located.  Each
+	  element may be a relative or absolute path.  If absolute, it is used
+	  as is.  If relative, it is searched for on the classpath.</description>
+	</property>
+
+	<property>
+	  <name>plugin.auto-activation</name>
+	  <value>true</value>
+	  <description>
+	  Defines if some plugins that are not activated regarding
+	  the plugin.includes and plugin.excludes properties must be automaticaly
+	  activated if they are needed by some actived plugins.
+	  </description>
+	</property>
+	
+	<property>
+	  <name>plugin.includes</name>
+	  <value>.+</value>
+	  <description>All active sensors are listed here.</description>
+	</property>
+
+	<property>
+	  <name>plugin.excludes</name>
+	  <value></value>
+	  <description>Regular expression naming plugin directory names to exclude.  
+	  </description>
+	</property>
+	
+</configuration>	
+

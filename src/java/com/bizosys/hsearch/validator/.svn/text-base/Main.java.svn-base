@@ -1,0 +1,41 @@
+package com.oneline.pipe.validate; 
+
+import com.oneline.biz.pipe.Pipe;
+import com.oneline.biz.pipe.PipeData;
+import com.oneline.util.ApplicationError;
+import com.oneline.util.ApplicationFault;
+import com.oneline.util.StringUtils;
+import com.oneline.util.conf.Configuration;
+
+/**
+ * Validation
+<p n="validation"> 
+	<u n="required" a="lead.base.fn,lead.base.ln" />
+	<u n="between" a="lead.base.salary" b="23.34" c="45.34" />
+	<u n="greater" a="lead.base.salary" b="23.34" />
+	<u n="lesser" a="lead.base.salary" b="23.34" />
+	<u n="equal" a="lead.base.name" b="34.34" />
+	<u n="anyof" a="lead.base.name" b="Abinash Karana|Jyoti Pattnaik" />
+</p>
+ * @author Abinash
+ *
+ */
+public class Main implements Pipe {
+
+	Configuration config = null;
+	Validate validator = new Validate();
+	
+	public void setConfig(Configuration config) {
+		LOG.debug("Initializing Validation Pipe");
+		this.config = config;
+	}
+
+	public boolean process(PipeData pipeData) throws ApplicationError, ApplicationFault {
+    	
+		LOG.debug("Executing validation");
+		if ( null == pipeData ) throw new ApplicationError ("Invalid business data");
+		validator.process(pipeData);
+		return true;
+    }
+	
+}

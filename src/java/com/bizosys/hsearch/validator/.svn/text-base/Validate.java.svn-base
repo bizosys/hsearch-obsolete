@@ -1,0 +1,377 @@
+package com.oneline.pipe.validate;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.oneline.biz.blueprint.parser.Argument;
+import com.oneline.biz.blueprint.parser.StructureField;
+import com.oneline.biz.pipe.PipeData;
+import com.oneline.util.ApplicationError;
+import com.oneline.util.ApplicationFault;
+import com.oneline.util.StringUtils;
+
+public class Validate {
+	
+	private static Logger LOG = Logger.getLogger(Validate.class.getName());
+	
+	public static final String ANYOF = "anyof";
+	public static final char CHAR_ANYOF = 'a';
+	
+	public static final String BETWEEN = "between";
+	public static final char CHAR_BETWEEN = 'b';
+	
+	public static final String EQUAL = "equal";
+	public static final char CHAR_EQUAL = 'e';
+	
+	public static final String GREATER = "greater";
+	public static final char CHAR_GREATER = 'g';
+	
+	public static final String LESSER = "lesser";
+	public static final char CHAR_LESSER = 'l';
+
+	public static final String REQUIRED = "required";
+	public static final char CHAR_REQUIRED = 'r';
+	
+	/**
+	 * Process the validation.
+	 * 
+	 * @param data
+	 * @return
+	 * @throws ApplicationError
+	 * @throws ApplicationFault
+	 */
+	public void process(PipeData data) throws ApplicationError, ApplicationFault {
+		
+		/**
+		 * required, between, greater, lesser, equal, anyof, ...
+		 */
+		List<String> errorFields = new ArrayList<String>(3); 
+		checkDataType (data, errorFields );
+		
+		for ( Argument valAtom : data.currentPipe.args ) {
+			
+			if ( null == valAtom.arg1) continue;
+			
+			char firstChar = valAtom.name.charAt(0);
+	    	switch (firstChar) {
+	    		case  CHAR_ANYOF:
+	    			checkAnyOf (valAtom, data, errorFields);  
+	    			break;
+	    		case  CHAR_BETWEEN:
+	    			checkBetween (valAtom, data, errorFields);
+	    			break;
+	    		case  CHAR_EQUAL:
+	    			checkEqual (valAtom, data, errorFields);
+	    			break;
+	    		case  CHAR_GREATER:
+	    			checkGreater (valAtom, data, errorFields);
+	    			break;
+	    		case  CHAR_LESSER:
+	    			checkLesser(valAtom, data, errorFields);
+	    			break;
+	    		case  CHAR_REQUIRED:
+	    			checkRequired (valAtom, data, errorFields);
+	    			break;
+	    		default:
+	    			throw new ApplicationFault(ApplicationFault.BAD_CONFIG + " - (Argument) " + valAtom);
+	    	}
+		}
+
+		/**
+		 * Check for any possible errors.. Report them
+		 */
+		if ( 0 == errorFields.size()) {
+			ApplicationError ae = new ApplicationError(ApplicationError.INVALID_INPUT);
+			for (String errorFld : errorFields) {
+				String val = "";
+				for (Object obj :  data.getExistingXmlMap().get(errorFld)) {
+					val = val + '[' + obj.toString() + ']';
+				}
+				ae.addStateVariable(errorFld, val);
+			}
+			throw ae;
+		}
+	}
+
+	/**
+	 * 	<u n="anyof" a="lead.base.name" b="Abinash Karana|Jyoti Pattnaik" />
+	 * @param valAtom
+	 * @param data
+	 * @param errorFields
+	 */
+	private void checkAnyOf (Argument valAtom, PipeData data, 
+	List<String> errorFields) throws ApplicationError, ApplicationFault {
+		
+		checkArguments(valAtom, 2);
+		
+		Object[] passedValues = data.getReceivedXmlMap().get(valAtom.arg1); 
+		if ( null == passedValues ) return;
+		
+		String[] allowedVals = valAtom.arg2.split("|");
+		String passedValueStr = null;
+		boolean isAllowed = false;
+		
+		for (Object passedValue : passedValues) {
+			isAllowed = false;
+			passedValueStr = passedValue.toString();
+			for (String allowedVal : allowedVals) {
+				if ( passedValueStr.length() != allowedVal.length()) continue;
+				if ( allowedVal.equals(passedValueStr)) {
+					isAllowed = true;
+					break;
+				}
+			}
+			if ( !isAllowed ) errorFields.add(valAtom.arg1);
+		}
+	}
+	
+	/**
+	 * <u n="between" a="lead.base.salary" b="23.34" c="45.34" />
+	 * @param valAtom
+	 * @param data
+	 * @param errorFields
+	 */
+	private void checkBetween(Argument valAtom, PipeData data, 
+	List<String> errorFields)  throws ApplicationError, ApplicationFault {
+		
+		checkArguments(valAtom, 3);
+			
+		Object[] passedValues = data.getReceivedXmlMap().get(valAtom.arg1);
+		if ( null == passedValues) return;
+		
+		String passedValueStr = null;
+		boolean isRange = false;
+
+		double minRange = Double.parseDouble(valAtom.arg2);
+		double maxRange = Double.parseDouble(valAtom.arg3);
+		
+		for (Object passedValue : passedValues) {
+			isRange = false;
+			passedValueStr = passedValue.toString();
+			double passedValueDbl = Double.parseDouble(passedValueStr);
+			isRange = DecimalValidator.isInRange(passedValueDbl, minRange,maxRange);
+			if ( !isRange ) errorFields.add(valAtom.arg1);
+		}		
+	}
+	
+	/**
+	 * 	<u n="equal" a="lead.base.name" b="34.34" />
+	 * @param valAtom
+	 * @param data
+	 * @param errorFields
+	 */
+	private void checkEqual(Argument valAtom, PipeData data, 
+		List<String> errorFields) throws ApplicationFault {
+		
+		checkArguments(valAtom, 2);
+				
+		Object[] passedValues = data.getReceivedXmlMap().get(valAtom.arg1);
+		if ( null == passedValues) return;
+		
+		for (Object passedValue : passedValues) {
+			if ( ! valAtom.arg2.equals(passedValue.toString()) )
+				errorFields.add(valAtom.arg1);
+		}		
+	}
+
+	
+	/**
+	 * 	<u n="greater" a="lead.base.salary" b="23.34" />
+	 * @param valAtom
+	 * @param data
+	 * @param errorFields
+	 */
+	private void checkGreater(Argument valAtom, 
+		PipeData data, List<String> errorFields) throws ApplicationFault {
+		
+		checkArguments(valAtom, 2);
+				
+		Object[] passedValues = data.getReceivedXmlMap().get(valAtom.arg1);
+		if ( null == passedValues) return;
+			
+		double waterMark = Double.parseDouble(valAtom.arg2);
+			
+		for (Object passedValue : passedValues) {
+			double passedValueDbl = Double.parseDouble(passedValue.toString());
+			if ( ! DecimalValidator.maxValue(passedValueDbl, waterMark) )
+				errorFields.add(valAtom.arg1);
+		}
+	}
+	
+	/**
+	 * 	<u n="lesser" a="lead.base.salary" b="23.34" />
+	 * @param valAtom
+	 * @param data
+	 * @param errorFields
+	 */
+	private void checkLesser(Argument valAtom, PipeData data, 
+		List<String> errorFields) throws ApplicationFault {
+		
+		checkArguments(valAtom, 2);
+				
+		Object[] passedValues = data.getReceivedXmlMap().get(valAtom.arg1);
+		if ( null == passedValues) return;
+			
+		double waterMark = Double.parseDouble(valAtom.arg2);
+			
+		for (Object passedValue : passedValues) {
+			double passedValueDbl = Double.parseDouble(passedValue.toString());
+			if ( ! DecimalValidator.minValue(passedValueDbl, waterMark) )
+				errorFields.add(valAtom.arg1);
+		}
+	}
+
+	/**
+	 * 	<u n="required" a="lead.base.fn,lead.base.ln" />
+	 * @param valAtom
+	 * @param data
+	 * @param errorFields
+	 */
+	private void checkRequired(Argument valAtom, 
+		PipeData data, List<String> errorFields) throws ApplicationFault {
+		
+		checkArguments(valAtom, 1);
+		String[] requiredFlds = StringUtils.getStrings(valAtom.arg1);
+		if ( null == requiredFlds) return;
+		
+		for (String fld : requiredFlds) {
+			if ( ! data.getReceivedXmlMap().containsKey(fld) ) {
+				errorFields.add(fld);
+			}
+		}
+	}
+
+	private void checkDataType (PipeData data, List<String> errorFields ) 
+	throws ApplicationError, ApplicationFault {
+		
+		Map<String, StructureField> fieldTypes = data.getBluePrint().getFields(); 
+		Map<String, Object[]>  xmlMapValues	= data.getReceivedXmlMap();
+		
+		for (String fieldName : xmlMapValues.keySet()) {
+			
+			StructureField field = fieldTypes.get(fieldName);
+			
+			if ( null == field) {
+				if ( null == errorFields ) errorFields = new ArrayList<String>(5);
+				errorFields.add(fieldName);
+				continue;
+			}
+
+			Object[] value = xmlMapValues.get(fieldName); 
+
+			for (Object fV : value) { //check one by one
+				
+				char dataTypeC = field.dataType.charAt(0);
+				boolean isValid = true;
+				switch ( dataTypeC ) {
+				
+				case 'a' :
+					if ( StructureField.ALPHA.equals(field.dataType) ) {
+						isValid = StringValidator.isValidAlpha(fV.toString(), true);
+					} else if ( StructureField.ALPHANUMBERIC.equals(field.dataType) ) {
+						isValid = StringValidator.isValidAlphaNumberic(fV.toString(), true);
+					}
+					break;
+					
+				case 'd' :
+					if ( StructureField.DATE.equals(field.dataType) ) { //High posibility
+						isValid = DateValidator.isValid(fV.toString(), null); //v="01/01/2002 00.00.00 IST:01/01/2009 00.00.00 IST"
+					} else if ( StructureField.DNA.equals(field.dataType) ) {
+						//	Ignore
+					}
+					break;
+
+				case 'e' :
+					if ( StructureField.EMAIL.equals(field.dataType) ) { 
+						isValid = EMailValidator.isValid(fV.toString());
+					} 
+					break;
+					
+				case 'f' :
+					if ( StructureField.FAX.equals(field.dataType) ) {
+						isValid = PhoneValidator.isValid(fV.toString());
+					} 
+					break;
+
+				case 'm' :
+					if ( StructureField.MOBILE.equals(field.dataType) ) {
+						isValid =  PhoneValidator.isValid(fV.toString());
+					} 
+					break;
+
+				case 'l' :
+					if ( StructureField.LANDLINE.equals(field.dataType) ) {
+						isValid = PhoneValidator.isValid(fV.toString());
+					} 
+					break;
+
+				case 'n' :
+					if ( StructureField.NUMBER.equals(field.dataType) ) {
+						isValid = DecimalValidator.isValid(fV.toString());
+					} 
+					break;
+
+				case 's' :
+					if ( StructureField.SELECT.equals(field.dataType) ) {
+						isValid = StringValidator.isValidSelect(fV.toString(), field.options);
+					} else if ( StructureField.SIGN.equals(field.dataType) ) {
+						//Ignore
+					}
+					break;
+					
+
+				case 't' :
+					if ( StructureField.TEXT.equals(field.dataType) ) {
+						// Ignore
+					} 
+					break;
+					
+				case 'w' :
+					if ( StructureField.WWW.equals(field.dataType) ) {
+						//Ignore
+					} 
+					break;
+				
+				default:
+					break;
+				}
+				if ( ! isValid ) errorFields.add(field.name);
+			}
+		}
+	}
+	
+	/**
+	 * Look for the correct inputs by checking the appropriate number
+	 * of parameters to execute the validation process.
+	 * Ex. Equal always require a L.H.S and R.H.S
+	 * @param valAtom
+	 * @param no
+	 * @throws ApplicationFault
+	 */
+	private void checkArguments(Argument valAtom, int no) throws ApplicationFault {
+		boolean isEmpty =  false;
+		switch (no) {
+			case 1:
+				isEmpty = StringUtils.isEmpty(valAtom.arg1);
+				break;
+			case 2:
+				isEmpty = StringUtils.isEmpty(valAtom.arg1) ||
+					StringUtils.isEmpty(valAtom.arg2);
+				break;
+			case 3:
+				isEmpty = StringUtils.isEmpty(valAtom.arg1) ||
+					StringUtils.isEmpty(valAtom.arg2) ||
+					StringUtils.isEmpty(valAtom.arg3);
+		}
+		
+		if ( isEmpty ) {
+			LOG.warn("Argument = " + valAtom + " \n Needed Numbers : " + no);
+			ApplicationFault af = new ApplicationFault(ApplicationFault.BAD_CONFIG);
+			af.solution = valAtom.toString();
+			throw af;
+		}
+	}
+}

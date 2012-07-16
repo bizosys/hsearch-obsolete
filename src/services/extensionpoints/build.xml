@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project name="extensionpoints">
+
+	<import file="../build-plugin.xml"/>
+	<target name="jar" />
+	<target name="custom_deploy">
+	    <echo message="Overridding compilation of extensionpoints"/>
+	</target>
+	
+</project>

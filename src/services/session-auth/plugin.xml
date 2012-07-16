@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="session-auth"
+   name="Session Authentication Extension"
+   version="1.0.0"
+   provider-name="HSearch Initiative">
+
+
+   <runtime>
+      <library name="session-auth.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="extensionpoints"/>
+   </requires>
+
+   <extension id="com.bizosys.hsearch.auth"
+              name="Session Authentication"
+              point="com.bizosys.oneline.session.Session">
+
+      <implementation id="auth"
+                      class="com.bizosys.hsearch.Auth">
+
+        <parameter name="OnStart" value="true"/>
+        <parameter name="OnFinish" value="true"/>
+      </implementation>
+
+   </extension>
+
+</plugin>

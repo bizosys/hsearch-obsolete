@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin
+   id="extensionpoints"
+   name="Extension points"
+   version="0.1.0"
+   provider-name="Oneline Initiative">
+
+   <!-- this file hosts all extension points nutch core code offers. 
+   Please not that plugins can define extension points as well to be extendable.-->
+
+<extension-point
+      id="com.bizosys.oneline.services.Service"
+      name="Services Plugin"/>
+
+<extension-point
+      id="com.bizosys.oneline.session.Session"
+      name="Session Monitors" 
+/>
+
+<extension-point
+      id="com.bizosys.oneline.pipes.PipeIn"
+      name="Input Pipes" 
+/>
+
+<extension-point
+      id="com.bizosys.oneline.pipes.PipeOut"
+      name="Output Pipes" 
+/>
+
+</plugin>
