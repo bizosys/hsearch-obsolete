@@ -1,0 +1,543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Add Document API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+    <script type="text/javascript">
+        function callMethod() {
+            var hkey=txtHkey.value;
+            var docXml=encode(txtHDocument.value);
+            var runplan=txtRunPlan.value.replace(/\n/g, ",");
+            
+            var url= rootUrl + 
+                "?service=search&action=document.add&hkey=" +
+                hkey + 
+                "&runplan=" + runplan + 
+                "&hdoc=" + docXml;
+                
+            divReq.innerHTML = "<h2>Click following link to view Formatted XML via GET</h2><a href=\"" + url + "\">" + url + "</a>";
+            
+            xmlData = { service: "search", 
+                        action: "document.add", 
+                        hkey: hkey,
+                        runplan:runplan,
+                        hdoc: txtHDocument.value
+                      };
+	        callAjax(xmlData, divRes, callRes);
+        }
+        
+		function callRes(data) {
+		    showSucess("Document Indexing Rest API:", data, divRes);
+        }	  
+        
+    </script>
+    
+</head>
+
+<body>
+    <span style="font-size:24px">document.add</span> <br />
+    <a href="index.html">REST API</a> . <a href="#">document.add</a>
+    <br /><br />
+    <hr />
+    Index a new document. The indexing happens in real time. HSearch is capable of
+    indexing and searching at same time. All elements of a document are captured using
+    a HDocument XML format. <br />
+    
+    <br /><br />
+
+ <h1>Parameters</h1>
+ 
+ <table style="width:80%">
+    <tr>
+        <td style="width:15%;padding-bottom:4px"><b>Name</b></td>
+        <td style="width:10%;padding-bottom:4px;"><b>Type</b></td>
+        <td style="width:75%;padding-bottom:4px;"><b>Description</b></td>
+    </tr>
+    <tr>
+        <td style="width:15%;vertical-align:top">hdoc</td>
+        <td style="width:10%;vertical-align:top">XML</td>
+        <td style="width:75%;">
+        
+    A document has following 4 parts <br />
+        <h3>1. Meta Data</h3>
+        <table width="100%">
+            <tr class="greydiv">
+                <td style="width:10%">Field</td>
+                <td style="width:10%">Type</td>
+                <td style="width:75%">Description</td>
+                <td style="width:5%">Required</td>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td>String</td>
+                <td>Unique Key across account scoped documents. 
+                Ex. If database tables are indexed, it could be table_primarykey,
+                or GUID or even a auto incremented interger from a key mapping store.</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td>viewPermission</td>
+                <td>ACL</td>
+                <td>
+                    Can grant view accesses to the document. A typical access is of following types :<br />
+                    . user ids <br />
+                    . teams <br />
+                    . roles<br />
+                    . organization units <br />
+                    . roles inside a organization unit <br />
+                    . Anonumous ( a * user)
+                    <br /><br />
+                    Example XML
+<pre>
+&lt;viewPermission&gt;
+    &lt;uids&gt;
+        &lt;string&gt;emp001@abc.com&lt;/string&gt;
+        &lt;string&gt;emp002@def.com&lt;/string&gt;
+    &lt;/uids&gt;
+    &lt;roles&gt;
+        &lt;string&gt;developer&lt;/string&gt;
+        &lt;string&gt;architect&lt;/string&gt;
+    &lt;/roles&gt;
+    &lt;ous&gt;
+        &lt;string&gt;marketting&lt;/string&gt;
+    &lt;/ous&gt;
+    &lt;ouAndRoles&gt;
+        &lt;string-array&gt;
+            &lt;string&gt;IS&lt;/string&gt;
+            &lt;string&gt;administrator&lt;/string&gt;
+         &lt;/string-array&gt;
+         &lt;string-array&gt;
+            &lt;string&gt;HR&lt;/string&gt;
+            &lt;string&gt;administrator&lt;/string&gt;
+          &lt;/string-array&gt;
+    &lt;/ouAndRoles&gt;
+&lt;/viewPermission&gt;
+</pre>                    
+
+                    </td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>editPermission</td>
+                <td>ACL</td>
+                <td>
+                    All granted users will be able to edit the documents.
+                    The XML format is same as above viewPermission field.
+                </td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>docType</td>
+                <td>String</td>
+                <td>Document Type. It helps to scope the search specific to a document type.</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>tags</td>
+                <td>Comma Separated Strings </td>
+                <td>These are the author keywords for the document. Biases the indexing process.</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>citationTo</td>
+                <td>String List</td>
+                <td> 
+                The outward links from this document. 
+                What all sources are referred in this document.
+                Ex. <br />&lt;string&gt;www.abc.com&lt;/string&gt;<br />
+                    &lt;string&gt;www.def.com&lt;/string&gt;
+                </td>
+                <td>No</td>
+            </tr>
+            
+            <tr>
+                <td>citationFrom</td>
+                <td>String List</td>
+                <td> 
+                Which all sources have referred to this document.
+                Ex. <br />&lt;string&gt;www.123.com&lt;/string&gt;<br />
+                    &lt;string&gt;www.456.com&lt;/string&gt;
+                </td>
+                <td>No</td>
+            </tr>
+            
+            <tr>
+                <td>createdOn</td>
+                <td>Date</td>
+                <td>Which date the document is created. The format <br />
+                YYYY-MM-DD HH:MI:SS.MS Z (1972-02-02 01:00:00.000 IST)
+                </td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>modifiedOn</td>
+                <td>Date</td>
+                <td>Which date the document is modified. The format <br />
+                YYYY-MM-DD HH:MI:SS.MS Z (1972-02-02 01:00:00.000 IST)
+                </td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>validTill</td>
+                <td>Date</td>
+                <td>Till which date the document is valid. The format <br />
+                YYYY-MM-DD HH:MI:SS.MS Z (1972-02-02 01:00:00.000 IST)
+                </td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>weight</td>
+                <td>Integer</td>
+                <td>Biases the ranking algorithm. Higher weight will rank documents better. </td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>Status/State</td>
+                <td>String</td>
+                <td>Can filter on status during query. 
+                Ex. Applied, Processed, Active, Inactive</td>
+                <td>No</td>
+            </tr>
+            
+        </table>
+            
+        <h3>2. Body</h3>
+        <table width="100%">
+            <tr class="greydiv">
+                <td style="width:10%">Field</td>
+                <td style="width:10%">Type</td>
+                <td style="width:75%">Description</td>
+                <td style="width:5%">Required</td>
+            </tr>
+            <tr>
+                <td style="width:10%">fields</td>
+                <td style="width:10%">Field List Xml</td>
+                <td style="width:75%">
+                Miltiple fields can be defined. <br />
+<pre>
+  &lt;fields&gt;
+      &lt;field&gt;
+        &lt;name&gt;field name&lt;/name&gt;
+        &lt;value&gt;field value&lt;/value&gt;
+        &lt;index&gt;true&lt;/index&gt;
+        &lt;analyze&gt;true&lt;/analyze&gt;
+    &lt;/field&gt;
+    &lt;field&gt;
+      ...
+  &lt;/fields&gt;                    
+</pre>
+
+If <b>index</b> is true, it indexes this field. <br />
+If <b>analyze</b> is true, before indexing it analyzes the field, and indexes each word rather than whole value as a single word.
+
+                </td>
+                <td style="width:5%">No</td>
+            </tr>            
+               
+        </table>
+        <h3>3. Display Data</h3>
+       <table width="100%">
+            <tr class="greydiv">
+                <td style="width:10%">Field</td>
+                <td style="width:10%">Type</td>
+                <td style="width:75%">Description</td>
+                <td style="width:5%">Required</td>
+            </tr>
+             <tr>
+                <td>url</td>
+                <td>String</td>
+                <td>From the search result, when one clicks to see detail, this url will be followed.</td>
+                <td>No</td>
+            </tr> 
+             <tr>
+                <td>title</td>
+                <td>String</td>
+                <td>When multiple records are shown, this is the title of the record.
+                Many documents come with a title. However, in case of XML documents
+                some fields together may represent a title. An employee XML may show
+                First name, Last name in the title field.
+                </td>
+                <td>No</td>
+            </tr> 
+            
+             <tr>
+                <td>preview</td>
+                <td>String</td>
+                <td>
+                    When a search matches a record, it can either show the matching 
+                    section or a picure like first page of the document. One can show
+                    a preview follwed with best matching section. <br />
+                    Typical preview string is a ( image url, video url) 
+                    Content inside preview is not indexed.
+                </td>
+                <td>No</td>
+            </tr>
+            
+             <tr>
+                <td>cacheText</td>
+                <td>String</td>
+                <td>
+                    Cache text holds the texual representation of the document.
+                    When the query result is displayed, the best matching section
+                    is also shown to give the hint to the user about the content.
+                    Content inside this cacheText is also indexed.
+                </td>
+                <td>No</td>
+            </tr>                
+        </table>             
+        
+        <h3>4. Social Content</h3>
+            <table width="100%">
+            <tr class="greydiv">
+                <td style="width:10%">Field</td>
+                <td style="width:10%">Type</td>
+                <td style="width:75%">Description</td>
+                <td style="width:5%">Required</td>
+            </tr>
+             <tr>
+                <td>socialText</td>
+                <td>Comma Separated Strings </td>
+                <td>
+                    As the document, gets more and more visits and people find it related to their
+                    searched word, this fields takes all these keywords and attaches to the document.
+                    Later during search ranking process, matcing social text boosts a document ranking.
+                    <br />
+                    Example. <br />
+                    <pre>
+  &lt;socialText&gt;  
+   &lt;string&gt; IT Development&lt;/string&gt;
+   &lt;string&gt; Big Data&lt;/string&gt;
+  &lt;/socialText&gt;
+                    </pre>  
+                </td>
+                <td>No</td>
+            </tr>
+            </table>        
+        </td>
+    </tr>    
+    <tr>
+        <td style="width:15%;vertical-align:top">runplan</td>
+        <td style="width:10%;vertical-align:top">String</td>
+        <td style="width:75%;vertical-align:top">
+        
+        Runplan are provided as comma separated plan names. <br />
+        Following table lists down plan names with descriptions.
+        <br /><br />
+        <table style="width:90%">
+            <tr class="greydiv">
+                <td style="width:25%;vertical-align:top">Plan Name</td>
+                <td style="width:75%;vertical-align:top">Plan Description</td>
+            </tr>
+            <tr>
+                <td>FilterDuplicateId</td>
+                <td>If a document with existing id exists, new document overrides it.</td>
+            </tr>
+            <tr>
+                <td>TokenizeStandard</td>
+                <td>It tokenizes a word based on blanks and special characters</td>
+            </tr>
+            <tr>
+                <td>TokenizeWhiteSpace</td>
+                <td>It tokenizes a word only based on white space between them.</td>
+            </tr>
+            
+            <tr>
+                <td>FilterStopwords</td>
+                <td>Removes stop words</td>
+            </tr>
+            <tr>
+                <td>FilterTermLength</td>
+                <td>Any word less than 2 character or more than 200 character
+ are eliminated.</td>
+            </tr>
+            <tr>
+                <td>FilterLowercase</td>
+                <td>Convert the text to lower case. This builds a case neutral index.</td>
+            </tr>
+            <tr>
+                <td>FilterStem</td>
+                <td>Performs stemming on terms. Example, Convert playing to play</td>
+            </tr>
+            <tr>
+                <td>NormalizeAccents</td>
+                <td>Normalize accent from the content</td>
+            </tr>
+            <tr>
+                <td>RemoveBlankSpace</td>
+                <td>Condense multiple blanks to a single blank. This helps in forming cache text and eventually result display.</td>
+            </tr>
+            <tr>
+                <td>RemoveNonAscii</td>
+                <td>Remove non-ascii words from the content</td>
+            </tr>    
+            <tr>
+                <td>ComputeTokens</td>
+                <td>Runs the tokenization process</td>
+            </tr>
+            <tr>
+                <td>ComputeIpHouse</td>
+                <td>Enables searches near to the source. Example, A search occuring from India gives preference to indian sites.</td>
+            </tr>              
+            <tr>
+                <td>SaveToIndex</td>
+                <td>It stores the information to index database. </td>
+            </tr>
+            <tr>
+                <td>SaveToDictionary</td>
+                <td>It stores the words to the dictionary. </td>
+            </tr>
+            <tr>
+                <td>RemoveCachedText</td>
+                <td>Keeps the cached text as blank. This is good if we don't want to show the best matching section and always will be showing the preview part.</td>
+            </tr>                                                                                     
+            <tr>
+                <td>SaveToPreview</td>
+                <td>It saves the display information. Ex. a Image, Chart or a Abstract write up.</td>
+            </tr>
+            <tr>
+                <td>SaveToContent</td>
+                <td>It saves the documents with all it's field. </td>
+            </tr>
+            <tr>
+                <td>DeleteFromIndex</td>
+                <td>Delete a document from search index.</td>
+            </tr>
+            <tr>
+                <td>DeleteFromPreview</td>
+                <td>Delete a document from preview.</td>
+            </tr> 
+            <tr>
+                <td>DeleteFromDictionary</td>
+                <td>Delete a document words from dictionary.</td>
+            </tr>
+            <tr>
+                <td>DeleteFromContent</td>
+                <td>Delete a document from content.</td>
+            </tr>
+        </table>
+        
+        
+        </td>
+    </tr>    
+    <tr>
+        <td style="width:15%;">hkey</td>
+        <td style="width:10%;">String</td>
+        <td style="width:75%;">The API Key. If you don't have an account key, You can 
+        <a href="../demos/account_create.html" style="font-size:20px">Create A Key Here.</a></td>
+    </tr>    
+ </table>
+ 
+ <br />
+ <h1>Response</h1>
+ <br />
+ On sucess it returns <br /><br />
+ <div class="greydiv"><b>OK</b>.</div>
+ <br />
+ In case of error, the error message is inside XML. An error message format is, <br />
+ 
+ The Error response format is, 
+ <br /><br />
+ <div class="greydiv" style="width:100%; height:120px">
+    <pre>
+        &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;result&gt;
+            &lt;error&gt;
+                &lt;msg&gt;Failure : SearchService: ...
+            &lt;/error&gt;
+        &lt;/result&gt;
+    </pre>
+ </div>
+ 
+ <br />
+ <h1>See Also</h1>
+ <h3>
+    <a href="document.addXml.html">document.addXml</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+    <a href="document.load.html">document.load</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+    <a href="document.batch.html">document.batch</a>
+ </h3>
+
+ <br />
+ <h1>Test Console</h1>
+ <br />
+ <table style="border:none;width:90%" class="greydiv">
+    <tr>
+        <td rowspan="2" valign=top style="padding-top:24px">
+            <b>hkey</b> <br />
+            <input id="txtHkey" style="margin-top:8px;width:90%" type="text" value="" /> <br />
+            <br /><br />
+            <b>HDocument</b> <br />
+            <textarea id="txtHDocument" style="margin-top:8px;" cols="40" rows="15">
+<hdoc>            
+ <key>D001</key>
+  <url>http://www.bizosys.com/docId=123</url>
+  <title>A Detail Document</title>
+  <state>active</state>
+  <preview>data:image=http://www.bizosys.com/docId=123.jpg</preview>
+  <weight>200</weight>
+  <tags>  
+   <string>experience</string>
+   <string>demo</string>
+  </tags>
+  <createdOn>1972-02-02 01:00:00.000 IST</createdOn>
+  <modifiedOn>1974-02-02 03:48:41.204 IST</modifiedOn>
+  <validTill>1978-02-02 011:23:18.101 IST</validTill>
+  <citationTo>
+   <string>www.abc.com</string>
+   <string>www.def.com</string>
+  </citationTo>
+  <citationFrom>
+   <string>www.cba.com</string>
+   <string>www.fed.com</string>
+  </citationFrom>
+  <locale>en</locale>
+  <cacheText>Hello world hosted Search API Call.</cacheText>
+</hdoc>
+    </textarea>
+    <br /><br /><br />
+
+            
+    <b>RunPlan (Optional)</b> <br />
+    <textarea id="txtRunPlan" style="margin-top:8px;" cols="40" rows="15">
+FilterDuplicateId
+TokenizeStandard
+FilterStopwords
+FilterTermLength
+FilterLowercase
+FilterStem
+ComputeTokens
+SaveToDictionary
+SaveToIndex
+SaveToPreview
+SaveToContent
+    </textarea>
+            <br />
+            <input class="restCallButton" type="button" value="Call Method" onclick="callMethod()" />
+        </td>
+        <td style="padding:40px">
+            <div class="restRequest" id="divReq">
+                <a href="../service.html?service=search&action=account.doccodes.append&hkey=50BFB2F8337ADC32FC5866EFF998D608">
+                    ../service.html?service=search&action=account.doccodes.append&hkey=.... </a>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding:40px">
+            <div class="restResponse" id="divRes">
+                Click "Call Method" to see the response here..
+            </div>
+        </td>
+    </tr>
+    
+ </table>
+ 
+</body>
+</html>
+
+ 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="session-perf"
+   name="Performance Monitoring Session Extension"
+   version="1.0.0"
+   provider-name="HSearch Initiative">
+
+
+   <runtime>
+      <library name="session-perf.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="extensionpoints"/>
+   </requires>
+
+   <extension id="com.bizosys.hsearch.perf"
+		name="Performance Monitoring"
+		point="com.bizosys.oneline.session.Session">
+
+      <implementation id="session.perf"
+		class="com.bizosys.hsearch.Perf">
+        
+        <parameter name="OnStart" value="true"/>
+        <parameter name="OnFinish" value="true"/>
+      </implementation>
+
+   </extension>
+
+</plugin>

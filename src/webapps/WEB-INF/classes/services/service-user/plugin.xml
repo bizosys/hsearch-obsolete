@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="service-user"
+   name="User Service Plug-in"
+   version="1.0.0"
+   provider-name="HSearch Initiative">
+
+   <runtime>
+      <library name="service-user.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="extensionpoints"/>
+   </requires>
+
+   <extension id="com.bizosys.hsearch.user"
+              name="User Service"
+              point="com.bizosys.oneline.services.Service">
+
+      <implementation id="user"
+          class="com.bizosys.hsearch.UserService">
+
+        <parameter name="name" value="User Service"/>
+        <parameter name="logo" value=""/>
+        <parameter name="tags" value="welcome"/>
+        <parameter name="url" value="service/user"/>
+      </implementation>
+
+   </extension>
+
+</plugin>

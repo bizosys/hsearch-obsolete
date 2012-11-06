@@ -1,0 +1,234 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    
+	    function indexProcess() {
+	        xmlData = { service: "search", action : "document.batch", 
+                        hkey: guestKey,
+                        hdocs: txtDocList.value
+                      };
+			callAjax(xmlData, divInsertReq, indexSucess);
+	    }
+	    
+		function indexSucess(data) {
+		    showSucess("Indexing", divInsertReq, data, divInsertRes);
+        }	  
+        
+        
+	    function queryProcess() {
+	        xmlData = { service: "search", action : "document.search", 
+	                        hkey: guestKey,
+	                        query: txtSearch.value
+	                      };
+			callAjax(xmlData, divQueryReq, querySucess);
+	    }
+	    
+		function querySucess(data) {
+            showSucess("Query", divQueryReq, data, divQueryRes);
+        }	            
+        
+	    function deleteProcess() {
+	        var xmlData = { service: "search", action : "document.delete", 
+	                        hkey: guestKey,
+	                        key: txtDelId.value
+	                      };
+			callAjax(xmlData, divDeleteReq, deleteSucess);
+	    }
+	    
+		function deleteSucess(data) {
+		    showSucess("Delete", divDeleteReq, data, divDeleteRes);
+        }        
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Allows to define limits for fetched document ids, teasers and teaser length.</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>Step 1 of 3: Index Sample Document</h3>
+		    
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDocList">Documents:</label>
+                    <textarea cols="40" rows="30" name="txtDocList" id="txtDocList">
+<list>
+<hdoc>
+  <key>J001</key>
+  <title>The anatomy of a large-scale hypertextual Web search engine</title>
+  <cacheText>In this paper, we present Google, a prototype of a large-scale search engine which makes heavy use of the structure present in hypertext. Google is designed to crawl and index the Web efficiently and produce much more satisfying search results than existing systems. The prototype with a full text and hyperlink database of at least 24 million pages is available at </cacheText>
+</hdoc>
+	
+<hdoc>
+  <key>J002</key>
+  <title>Virage image search engine: an open framework for image management </title>
+  <cacheText>Until recently, the management of large image databases has relied exclusively on manually entered alphanumeric annotations. Systems are beginning to emerge in both the research and commercial sectors based on 'content-based' image retrieval, a technique which explicitly manages image assets by directly representing their visual attributes. The Virage image search engine provides an open framework for building such systems. The Virage engine expresses visual features as image 'primitives.' Primitives can be very general (such as color, shape, or texture) or quite domain specific (face recognition, cancer cell detection, etc</cacheText>
+</hdoc>
+	
+<hdoc>
+  <key>J003</key>
+  <title>A search engine for 3D models</title>
+  <cacheText>As the number of 3D models available on the Web grows, there is an increasing need for a search engine to help people find them. Unfortunately, traditional text-based search techniques are not always effective for 3D data. In this article, we investigate new shape-based search methods. The key challenges are to develop query methods simple enough for novice users and matching algorithms robust enough to work for arbitrary polygonal models. We present a Web-based search engine system that supports queries based on 3D sketches, 2D sketches, 3D models, and/or text keywords. For the shape-based queries, we have developed a new matching algorithm that uses spherical harmonics to compute discriminating similarity measures without requiring repair of model degeneracies or alignment of orientations. It provides 46 to 245&gt; better performance than related shape-matching methods during precision--recall experiments, and it is fast enough to return query results from a repository of 20,000 models in under a second. The net result is a growing interactive index of 3D models available on the Web (i.e., a Google for 3D models).</cacheText>
+</hdoc>
+
+<hdoc>
+  <key>J004</key>
+  <title>The Anatomy of a Large-Scale Hypertextual Web Search Engine </title>
+  <cacheText>Abstract In this paper, we present Google, a prototype of a large-scale search engine which makes heavy use of the structure present in hypertext. Google is designed to crawl and index the Web efficiently and produce much more satisfying search results than existing systems. The prototype with a full text and hyperlink database of at least 24 million pages is available at http:// google.stanford.edu/ To engineer a search engine is a challenging task. Search engines index tens to hundreds of millions of web pages involving a comparable number of distinct terms. They answer tens of millions of queries every day. Despite the importance of large-scale search engines on the web, very little academic research has been done on them. Furthermore, due to rapid advance in technology and web proliferation, creating a web search engine today is very different from three years ago. This paper provides an in-depth description of our large-scale web search engine -- the first such detailed public description we know of to date. Apart from the problems of scaling traditional search techniques to data of this magnitude, there are new technical challenges involved with using the additional information present in hypertext to produce better search results. This paper addresses this question of how to build a practical largescale system which can exploit the additional information present in hypertext. Also we look at the problem of how to effectively deal with uncontrolled hypertext collections where anyone can publish anything they want.
+</cacheText>
+</hdoc>
+
+<hdoc>
+  <key>J005</key>
+  <title>XSEarch: a semantic search engine for XML</title>
+  <cacheText>XSEarch, a semantic search engine for XML, is presented. XSEarch has a simple query language, suitable for a naive user. It returns semantically related document fragments that satisfy the user's query. Query answers are ranked using extended information-retrieval techniques and are generated in an order similar to the ranking. Advanced indexing techniques were developed to facilitate efficient implementation of XSEarch. The performance of the different techniques as well as the recall and the precision were measured experimentally. These experiments indicate that XSEarch is efficient, scalable and ranks quality results highly.</cacheText>
+</hdoc>
+
+</list>                    
+                    </textarea>
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="indexProcess()" value="Index" />
+
+            <div class="ui-theme-a"  id="divInsertReq"></div><br />
+            <div class="ui-theme-a"  id="divInsertRes"></div> <br />
+
+	        <h3>Step 2 of 3: Query Indexed Document</h3>
+
+			<table>
+				<tr>
+					<td style="padding:12px">scroll</td>
+					<td>Requires durng pagination. It helps to fetch next setup documents to show in the page.</td>
+				</tr>
+				<tr>
+					<td style="padding:12px">dfl</td>
+					<td>Document Fetch Limit. 
+					By Default it only fetches top 10 documents to show. </td>
+				</tr>
+				<tr>
+					<td style="padding:12px">mfl</td>
+					<td>Meta Information Fetch Limit. 
+					Further refinement of results based on the current query.<br />
+					A higher value will slow down the speed but will give a better quality result <br />
+					Ex. Is the search keyword and the document social tags are same? 
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:12px">tsl</td>
+					<td>Teaser section length. 
+					What is the <strong>Length</strong> of best matching section to show, 
+					extracted from matching document</td>
+				</tr>
+			</table>
+			
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtSearch">Keyword to Find:</label>
+                    <input type="text" name="txtSearch" id="txtSearch" value="scroll:2 dfl:5 mfl:3  tsl:76 search"  />
+                </div>
+            </fieldset>
+                
+            <input type=button onclick="queryProcess()" value="Query" /a>
+            
+            <div class="ui-theme-a"  id="divQueryReq"></div> <br />
+            <div class="ui-theme-a"  id="divQueryRes"></div> <br />
+	        
+	        <h3>Step 3 of 3: Cleanup Index</h3>
+	        
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDelId">Indexed Document Id:</label>
+                    <input type="text" name="txtDelId" id="txtDelId" value="X001"  />
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="deleteProcess()" value="Delete Document" />
+            
+            <div class="ui-theme-a"  id="divDeleteReq"></div> <br />
+            <div class="ui-theme-a"  id="divDeleteRes"></div> <br />
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+
+				<!-- Indexing -->
+				<li data-role="list-divider">Indexing</li>
+                <li><a data-ajax="false" href="query_basic.html">Document Querying</a></li>
+				<li><a data-ajax="false" href="query_record.html">Structured Records</a></li>
+				<li><a data-ajax="false" href="query_xml.html">XML Records</a></li>
+				<li><a data-ajax="false" href="index_document.html">Detail Document Indexing</a></li>
+				<li><a data-ajax="false" href="index_custom.html">Flexible Indexing</a></li>
+				<li><a data-ajax="false" href="index_batch.html">Batch Indexing</a></li>
+
+                <!-- User Experience -->
+				<li data-role="list-divider">User Experience</li>
+				<li><a data-ajax="false" href="result_preview.html">Previews</a></li>
+				<li><a data-ajax="false" href="document_date.html">Special searches</a></li>
+				<li><a data-ajax="false" href="dictionary_simple.html">Did You Mean</a></li>
+
+                <!-- Security -->
+				<li data-role="list-divider">Security</li>
+				<li><a data-ajax="false" href="query_access.html">Access Control</a></li>
+				<li><a data-ajax="false" href="document_team.html">Team Restriction</a></li>
+
+                <!-- Miscillineous -->
+				<li data-role="list-divider">Miscillineous</li>
+				<li><a data-ajax="false" href="dictionary_advanced.html">Dictionary Management</a></li>
+				<li>Search Result Limits</li>
+				
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li><a data-ajax="false" href="account_create.html">Create Account</a></li>
+				<li><a data-ajax="false" href="account_update.html">Allocate Buckets</a></li>
+			</ul>
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

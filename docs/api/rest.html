@@ -1,0 +1,114 @@
+<html>
+<body>
+http://localhost/hsearch-0.89/index.html
+
+<h3>Adding document Type codes</h3>
+<pre>
+service=configuration&action=document.typecodes&typecodes=&lt;map&gt;
+  &lt;entry&gt;
+    &lt;string&gt;customer&lt;/string&gt;
+    &lt;byte&gt;-127&lt;/byte&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;string&gt;employee&lt;/string&gt;
+    &lt;byte&gt;-128&lt;/byte&gt;
+  &lt;/entry&gt;
+&lt;/map&gt;
+</pre>
+
+<h3>Adding term Type codes</h3>
+<pre>
+service=configuration&action=term.typecodes&typecodes=&lt;map&gt;
+  &lt;entry&gt;
+    &lt;string&gt;name&lt;/string&gt;
+    &lt;byte&gt;-127&lt;/byte&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;string&gt;address&lt;/string&gt;
+    &lt;byte&gt;-128&lt;/byte&gt;
+  &lt;/entry&gt;
+&lt;/map&gt;
+</pre>
+
+<h3>Adding Stopwords</h3>
+service=configuration&action=stopwords.add&stopwords=a,and,the,an,of
+
+<h3>Adding a Document</h3>
+<pre>
+service=discovery&action=index.add&hdoc=&lt;com.bizosys.hsearch.common.HDocument&gt;
+  &lt;originalId&gt;TEST-ID-001&lt;/originalId&gt;
+  &lt;url&gt;http://wwww.bizosys.com&lt;/url&gt;
+  &lt;title&gt;Bizosys, Electronics City, Bangalore&lt;/title&gt;
+  &lt;preview&gt;&lt;/preview&gt;
+  &lt;cacheText&gt;They have 10 screen products and major contributor to HSearch. As well they provide enterprise support for hsearch&lt;/cacheText&gt;
+  &lt;fields&gt;
+    &lt;com.bizosys.hsearch.common.SField&gt;
+      &lt;index&gt;true&lt;/index&gt;
+      &lt;analyze&gt;true&lt;/analyze&gt;
+      &lt;store&gt;true&lt;/store&gt;
+      &lt;type&gt;2&lt;/type&gt;
+      &lt;name&gt;name&lt;/name&gt;
+      &lt;value&gt;Bizosys Technologies Limited&lt;/value&gt;
+    &lt;/com.bizosys.hsearch.common.SField&gt;
+    &lt;com.bizosys.hsearch.common.SField&gt;
+      &lt;index&gt;true&lt;/index&gt;
+      &lt;analyze&gt;true&lt;/analyze&gt;
+      &lt;store&gt;true&lt;/store&gt;
+      &lt;type&gt;2&lt;/type&gt;
+      &lt;name&gt;address&lt;/name&gt;
+      &lt;value&gt;STPI Building, Electronics City, Bangalore, India&lt;/value&gt;
+    &lt;/com.bizosys.hsearch.common.SField&gt;
+  &lt;/fields&gt;
+  &lt;citationTo&gt;
+    &lt;string&gt;www.10screens.com&lt;/string&gt;
+  &lt;/citationTo&gt;
+  &lt;citationFrom&gt;
+  &lt;/citationFrom&gt;
+  &lt;viewPermission&gt;
+    &lt;roles&gt;
+      &lt;string&gt;architect&lt;/string&gt;
+    &lt;/roles&gt;
+    &lt;uids&gt;
+      &lt;string&gt;*&lt;/string&gt;
+    &lt;/uids&gt;
+  &lt;/viewPermission&gt;
+  &lt;editPermission&gt;
+    &lt;uids&gt;
+      &lt;string&gt;n4501&lt;/string&gt;
+    &lt;/uids&gt;
+    &lt;teams&gt;
+      &lt;string&gt;teamA&lt;/string&gt;
+    &lt;/teams&gt;
+  &lt;/editPermission&gt;
+  &lt;state&gt;active&lt;/state&gt;
+  &lt;tenant&gt;bizosys&lt;/tenant&gt;
+  &lt;eastering&gt;100012.23&lt;/eastering&gt;
+  &lt;northing&gt;23.44&lt;/northing&gt;
+  &lt;weight&gt;99&lt;/weight&gt;
+  &lt;docType&gt;customer&lt;/docType&gt;
+  &lt;tags&gt;
+    &lt;string&gt;sociology&lt;/string&gt;
+    &lt;string&gt;biology&lt;/string&gt;
+  &lt;/tags&gt;
+  &lt;socialText&gt;
+    &lt;string&gt;universe&lt;/string&gt;
+    &lt;string&gt;bob kamath&lt;/string&gt;
+  &lt;/socialText&gt;
+  &lt;createdOn&gt;2010-12-07 15:29:30.515 IST&lt;/createdOn&gt;
+  &lt;modifiedOn&gt;2010-12-07 15:29:30.531 IST&lt;/modifiedOn&gt;
+  &lt;validTill&gt;2010-12-07 15:29:30.531 IST&lt;/validTill&gt;
+  &lt;ipAddress&gt;192.168.2.3&lt;/ipAddress&gt;
+  &lt;securityHigh&gt;false&lt;/securityHigh&gt;
+  &lt;sentimentPositive&gt;false&lt;/sentimentPositive&gt;
+  &lt;locale&gt;en&lt;/locale&gt;
+&lt;/com.bizosys.hsearch.common.HDocument&gt;
+</pre>
+
+<h3>Searching</h3>
+service=discovery&action=index.search&query=HSearch
+
+<h3>Dictionary Lookup</h3>
+service=discovery&action=dictionary.lookup&word=hsearch
+
+</body>
+</html>

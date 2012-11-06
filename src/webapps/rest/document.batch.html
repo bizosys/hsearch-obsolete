@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Add XML Document API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+    <script type="text/javascript">
+        function callMethod() {
+            var hkey=txtHkey.value;
+            var hdocXml=encode(txtHDocument.value);
+            var runplan=txtRunPlan.value.replace(/\n/g, ",");
+            
+            var url= rootUrl + 
+                "?service=search&action=document.batch" + 
+                "&hkey=" + hkey + 
+                "&runplan=" + runplan + 
+                "&hdocs=" + hdocXml;
+                
+            divReq.innerHTML = "<h2>Click following link to view Formatted XML via GET</h2><a href=\"" + url + "\">" + url + "</a>";
+            
+            xmlData = { service: "search", 
+                action: "document.batch", 
+                hkey: hkey,
+                hdocs: txtHDocument.value,
+                runplan:runplan
+            };
+            callAjax(xmlData, divRes, callRes);
+        }
+        
+		function callRes(data) {
+		    showSucess("Documents Indexing Rest API:", data, divRes);
+        }	  
+        
+    </script>
+    
+</head>
+
+<body>
+    <span style="font-size:24px">document.batch</span> <br />
+    <a href="index.html">REST API</a> . <a href="#">document.batch</a>
+    <br /><br />
+    <hr />
+    Index a batch of HDocuments. The indexing happens in real time. It takes all documents and processes at the same time.
+    Batch indexing is faster than indexing one document at a time. However, if it fails in middle, things can not be rolled
+    back. For this, one can test all filters except saving to <br />
+    FilterDuplicate (Deletes duplicate IDs), SaveToDictionary, SaveToIndex and SaveToContent.
+    <br />
+    
+    <br /><br />
+
+ <h1>Parameters</h1>
+ 
+ <table style="width:80%">
+    <tr>
+        <td style="width:15%;padding-bottom:4px"><b>Name</b></td>
+        <td style="width:10%;padding-bottom:4px;"><b>Type</b></td>
+        <td style="width:75%;padding-bottom:4px;"><b>Description</b></td>
+    </tr>
+    <tr>
+        <td style="width:15%;vertical-align:top">hdocs</td>
+        <td style="width:10%;vertical-align:top">XML</td>
+        <td style="width:75%;">
+            Contains list of documents. It is enclosed as <br />
+            <pre>
+&lt;list&gt;
+    &lt;hdoc&gt;
+    ...
+    &lt;/hdoc&gt;
+    &lt;hdoc&gt;
+    ...
+&lt;/list>
+            </pre>
+            For indivisual hdoc element, refer to <a href="document.add.html">document.add</a>.
+        </td>
+    </tr>    
+    
+    <tr>
+        <td style="width:15%;vertical-align:top">runplan</td>
+        <td style="width:10%;vertical-align:top">String</td>
+        <td style="width:75%;vertical-align:top">
+            Refer to <a href="document.add.html">document.add</a>  
+        </td>
+    </tr>    
+    <tr>
+        <td style="width:15%;">hkey</td>
+        <td style="width:10%;">String</td>
+        <td style="width:75%;">The API Key. If you don't have an account key, You can 
+        <a href="../demos/account_create.html" style="font-size:20px">Create A Key Here.</a></td>
+    </tr>    
+ </table>
+ 
+ <br />
+ <h1>Response</h1>
+ <br />
+ On sucess it returns <br /><br />
+ <div class="greydiv"><b>OK</b>.</div>
+ <br />
+ In case of error, the error message is inside XML. An error message format is, <br />
+ 
+ The Error response format is, 
+ <br /><br />
+ <div class="greydiv" style="width:100%; height:120px">
+    <pre>
+        &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;result&gt;
+            &lt;error&gt;
+                &lt;msg&gt;Failure : SearchService: ...
+            &lt;/error&gt;
+        &lt;/result&gt;
+    </pre>
+ </div>
+ 
+ <br />
+ <h1>See Also</h1>
+ <h3>
+    <a href="document.add.html">document.add</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+    <a href="document.load.html">document.load</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+    <a href="document.addXml.html">document.addXml</a>
+ </h3>
+
+ <br />
+ <h1>Test Console</h1>
+ <br />
+ <table style="border:none;width:90%" class="greydiv">
+    <tr>
+        <td rowspan="2" valign=top style="padding-top:24px">
+            <b>hkey</b> <br />
+            <input id="txtHkey" style="margin-top:8px;width:90%" type="text" value="" /> 
+            <br /><br /><br />
+            <b>HDocument</b> <br />
+            <textarea id="txtHDocument" style="margin-top:8px;" cols="40" rows="13">
+<list>
+ <hdoc>            
+  <key>D001</key>
+  <url>http://www.google.com</url>
+  <cacheText>Document 123.</cacheText>
+ </hdoc>
+ <hdoc>            
+  <key>D002</key>
+  <url>http://www.yahoo.com</url>
+  <cacheText>Document 223.</cacheText>
+ </hdoc>
+</list>
+            </textarea>
+
+            <br /><br /><br />
+            <b>RunPlan (Optional)</b> <br />
+            <textarea id="txtRunPlan" style="margin-top:8px;" cols="40" rows="3"></textarea>
+
+            <br /><br /><br />
+            <input class="restCallButton" type="button" value="Call Method" onclick="callMethod()" />
+
+        </td>
+        <td style="padding:40px">
+            <div class="restRequest" id="divReq">
+                <a href="../service.html?service=search&action=document.batch&hkey=">
+                    ../service.html?service=search&action=document.batch&hkey=.... </a>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding:40px">
+            <div class="restResponse" id="divRes">
+                Click "Call Method" to see the response here..
+            </div>
+        </td>
+    </tr>
+    
+ </table>
+ 
+</body>
+</html>
+

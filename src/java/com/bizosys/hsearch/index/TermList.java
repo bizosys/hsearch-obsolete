@@ -294,6 +294,10 @@ public class TermList implements IStorable {
 		int totalMatching = 0;
 		int posT = this.docPos.length;
 		
+		/**
+		 * This is a costlier looking cycle. 
+		 * TODO: Evaluate Set to make it faster
+		 */
 		for (int i=0; i<posT; i++) {
 			aPos = this.docPos[i];
 			if ( -1 == aPos) continue;
@@ -317,7 +321,11 @@ public class TermList implements IStorable {
 		
 		/**
 		 * Set other document positions also as -1
+		 * 
+		 * This is a costlier looking cycle. 
+		 * TODO: Evaluate Set to make it faster
 		 */
+
 		posT = another.docPos.length;
 		for (int i=0; i<posT; i++) {
 			aPos = another.docPos[i];

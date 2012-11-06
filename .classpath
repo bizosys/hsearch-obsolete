@@ -34,8 +34,6 @@
 	<classpathentry kind="lib" path="lib/carrot2-mahout-collections-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/carrot2-mahout-math-0.5.jar"/>
 	<classpathentry kind="lib" path="lib/carrot2-simple-xml-2.4.1.jar"/>
-	<classpathentry kind="lib" path="lib/carrot2-slf4j-log4j12-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/carrot2-guava-r08.jar"/>
 	<classpathentry kind="lib" path="lib/carrot2-jackson-core-asl-1.7.4.jar"/>
 	<classpathentry kind="lib" path="lib/carrot2-jackson-mapper-asl-1.7.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
@@ -46,5 +44,35 @@
 	<classpathentry kind="lib" path="lib/hadoop-core-0.20.2-cdh3u3.jar"/>
 	<classpathentry kind="lib" path="lib/hbase-0.90.4-cdh3u3.jar"/>
 	<classpathentry kind="lib" path="lib/zookeeper-3.3.4-cdh3u3.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/guava-r06.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jackson-core-asl-1.5.5.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jackson-jaxrs-1.5.5.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jackson-mapper-asl-1.4.2.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jackson-xc-1.5.5.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jasper-compiler-5.5.23.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jasper-runtime-5.5.23.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jaxb-api-2.1.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jaxb-impl-2.1.12.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jersey-core-1.4.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jersey-json-1.4.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jersey-server-1.4.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jettison-1.1.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jetty-6.1.26.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jetty-util-6.1.26.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jruby-complete-1.6.0.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jsp-2.1-6.1.14.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jsp-api-2.1-6.1.14.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/protobuf-java-2.3.0.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/servlet-api-2.5-6.1.14.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/slf4j-log4j12-1.5.8.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/thrift-0.2.0.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/xmlenc-0.52.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/zookeeper-3.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/carrot2-guava-r08.jar"/>
+	<classpathentry kind="lib" path="hbase/lib/guava-r09-jarjar.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

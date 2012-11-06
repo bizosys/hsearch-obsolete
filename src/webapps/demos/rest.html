@@ -1,0 +1,54 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script src="jquery.js"></script>
+	<script src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+
+	<script>
+		function invoke() {
+		    alert("coming");
+			$.ajax({
+			    type: "POST",
+			    cache:false,
+			    url: "http://localhost/hsearch-0.94",
+			    data: ({ service: "management", action : "account.get", hkey: "070B31E514C2A41A23A23352E6BAD2E1" }),
+			    dataType: "text",
+			    success: onsucess
+            });
+        }
+        
+		function onsucess(data) {
+		    alert(data);
+        }
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>
+	        <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" height="32px" />
+	    </h1>
+	    <a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+	</div><!-- /header -->
+    
+    <div class="content-secondary">
+
+        <h3>Search by Document and Field Type</h3>
+        <a href="#" onclick="invoke()" data-role="button" data-icon="gear" 
+            data-iconpos="right" style="width:400px">Add Records</a>
+
+	</div><!--/content-primary -->
+		
+</div><!-- /page -->
+
+</body>
+</html>

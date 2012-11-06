@@ -1,0 +1,273 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    
+	    function indexProcess() {
+	        var dictEntry = "<aword> \n\t<word>" + txtWord.value +
+	               "</word>\n\t<type>" + txtType.value + "</type>\n\t<related>" + 
+	               txtRelated.value + "</related>\n\t<detail>" + 
+	               txtDetail.value + "</detail>\n\t<frequency>" + 
+	               txtFrequency.value + "</frequency>\n </aword>";
+	               
+	        xmlData = { service: "search", action : "dictionary.add", 
+                        hkey: guestKey,
+                        entry: dictEntry
+                      };
+			callAjax(xmlData, divInsertReq, indexSucess);
+	    }
+	    
+		function indexSucess(data) {
+		    showSucess("Indexing", divInsertReq, data, divInsertRes);
+        }	  
+        
+        
+	    function queryProcess() {
+            var lookupType = $('input:radio[name=radio-lookup-1]:checked').val();
+            var word = txtSearch.value;
+	        
+	        if ( lookupType == "simple" ) {
+	            lookupType = "dictionary.lookup";
+	        } else if ( lookupType == "fuzzy" ) {
+	            lookupType = "dictionary.spell";
+	            
+	        } else if ( lookupType == "begins" ) {
+	            lookupType="dictionary.regex";
+	            word = "^" + word;
+	            
+	        } else if ( lookupType == "ends" ) {
+	            lookupType="dictionary.regex";
+	            word = word + "$" ;
+	        
+	        } else if ( lookupType == "regex" ) {
+	            lookupType="dictionary.regex";
+	            
+	        } else if ( lookupType == "all" ) {
+	            lookupType="dictionary.list";
+	            txtSearch.value = "";
+	        } else {
+	            lookupType="dictionary.lookup";
+	        }
+	        
+	        
+	        xmlData = { service: "search", action : lookupType, 
+                hkey: guestKey,
+                word: word
+            };
+			callAjax(xmlData, divQueryReq, querySucess);
+	    }
+	    
+		function querySucess(data) {
+            showSucess("Query", divQueryReq, data, divQueryRes);
+        }	            
+        
+	    function deleteProcess() {
+	        xmlData = { service: "search", action : "dictionary.delete", 
+	                        hkey: guestKey,
+	                        words: txtDelId.value
+	                      };
+			callAjax(xmlData, divDeleteReq, deleteSucess);
+	    }
+	    
+		function deleteSucess(data) {
+		    showSucess("Delete", divDeleteReq, data, divDeleteRes);
+        }        
+        
+	    function refreshProcess() {
+	        xmlData = { service: "search", action : "dictionary.refresh", 
+	                        hkey: guestKey
+	                      };
+			callAjax(xmlData, divDeleteReq, refreshSucess);
+	    }
+	    
+		function refreshSucess(data) {
+			divDeleteReq.innerHTML = "";
+		    alert (data);
+        }
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Did You Mean</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>Step 1 of 4: Add a word to Document</h3>
+		    
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtWord">Word:</label>
+                    <input type="text" name="txtWord" id="txtWord" value="hydrogen"  />
+                </div>
+            </fieldset>
+
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtType">Word Type (Comma Separated):</label>
+                    <input type="text" name="txtType" id="txtType" value="gas,fuel"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtRelated">Related Words(Comma Separated) :</label>
+                    <input type="text" name="txtRelated" id="txtRelated" value="helium,sun"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtFrequency">Frequency:</label>
+                    <input type="number" name="txtFrequency" id="txtFrequency" value="1"  />
+                </div>
+            </fieldset>            
+
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDetail">Detail:</label>
+                    <textarea cols="40" rows="10" name="txtDetail" id="txtDetail">Periodic table 1</textarea>
+                </div>
+            </fieldset>
+
+            <input type=button onclick="indexProcess()" value="Add To Dictionary" />
+
+            <div class="ui-theme-a"  id="divInsertReq"></div><br />
+            <div class="ui-theme-a"  id="divInsertRes"></div> <br />
+
+	        <h3>Step 2 of 4: Refresh Dictionary Now</h3>
+			<input type=button onclick="refreshProcess()" value="Refresh Dictionary" />
+			
+	        <h3>Step 3 of 4: Query Indexed Document</h3>
+
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtSearch">Word to Lookup:</label>
+                    <input type="text" name="txtSearch" id="txtSearch" value="hydrogen"  />
+                </div>
+            </fieldset>
+
+            <fieldset data-role="controlgroup">
+                <legend>Choose a Lookup Mechanism:</legend>
+     	        <input type="radio" name="radio-lookup-1" id="radio-lookup-1" value="simple" checked="checked" />
+     	        <label for="radio-lookup-1">Word Detail</label>
+
+     	        <input type="radio" name="radio-lookup-1" id="radio-lookup-2" value="fuzzy"  />
+     	        <label for="radio-lookup-2">Fuzzy/Correct Me</label>
+
+     	        <input type="radio" name="radio-lookup-1" id="radio-lookup-3" value="begins"  />
+     	        <label for="radio-lookup-3">Begins With</label>
+
+     	        <input type="radio" name="radio-lookup-1" id="select-lookup-4" value="ends"  />
+     	        <label for="select-lookup-4">Ends With</label>
+
+     	        <input type="radio" name="select-lookup-1" id="select-lookup-5" value="regex"  />
+     	        <label for="select-lookup-5">Regular Expression</label>
+
+     	        <input type="radio" name="select-lookup-1" id="select-lookup-6" value="all"  />
+     	        <label for="select-lookup-6">List All</label>
+
+            </fieldset>
+
+                
+            <input type=button onclick="queryProcess()" value="Lookup" /a>
+            
+            <div class="ui-theme-a"  id="divQueryReq"></div> <br />
+            <div class="ui-theme-a"  id="divQueryRes"></div> <br />
+	        
+	        <h3>Step 4 of 4: Cleanup Dictionary</h3>
+	        
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDelId">Delete words (Comma Separated List):</label>
+                    <input type="text" name="txtDelId" id="txtDelId" value="hydrogen"  />
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="deleteProcess()" value="Delete Document" />
+            
+            <div class="ui-theme-a"  id="divDeleteReq"></div> <br />
+            <div class="ui-theme-a"  id="divDeleteRes"></div> <br />
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+
+				<!-- Indexing -->
+				<li data-role="list-divider">Indexing</li>
+                <li><a data-ajax="false" href="query_basic.html">Document Querying</a></li>
+				<li><a data-ajax="false" href="query_record.html">Structured Records</a></li>
+				<li><a data-ajax="false" href="query_xml.html">XML Records</a></li>
+				<li><a data-ajax="false" href="index_document.html">Detail Document Indexing</a></li>
+				<li><a data-ajax="false" href="index_custom.html">Flexible Indexing</a></li>
+				<li><a data-ajax="false" href="index_batch.html">Batch Indexing</a></li>
+
+                <!-- User Experience -->
+				<li data-role="list-divider">User Experience</li>
+				<li><a data-ajax="false" href="result_preview.html">Previews</a></li>
+				<li><a data-ajax="false" href="document_date.html">Special searches</a></li>
+				<li>Did You Mean</li>
+
+                <!-- Security -->
+				<li data-role="list-divider">Security</li>
+				<li><a data-ajax="false" href="query_access.html">Access Control</a></li>
+				<li><a data-ajax="false" href="document_team.html">Team Restriction</a></li>
+
+                <!-- Miscillineous -->
+				<li data-role="list-divider">Miscillineous</li>
+				<li><a data-ajax="false" href="dictionary_advanced.html">Dictionary Management</a></li>
+				<li><a data-ajax="false" href="result_amount.html">Search Result Limits</a></li>
+				
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li><a data-ajax="false" href="account_create.html">Create Account</a></li>
+				<li><a data-ajax="false" href="account_update.html">Allocate Buckets</a></li>
+			</ul>
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

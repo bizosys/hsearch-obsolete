@@ -1,0 +1,176 @@
+<html>
+<head>
+    <title>HSearch - The NoSQL Search</title>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17511515-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body style="font-family: Sans-Serif; font-size: 12px; width: 95%;">
+	<table width="100%">
+		<tr width="100%">
+			<td width="33%"><a href="index.html" title="HSearch Home" style="text-decoration:none;"><img src="hsearch-logo.gif" style="border: 0px;" /></a></td>
+			<td width="33%"></td>
+			<td width="33%">
+				Built using:<br />
+				<img src="http://hadoop.apache.org/mapreduce/images/hadoop-logo.jpg" width="200" />&nbsp;&nbsp;
+				<img src="http://hbase.apache.org/images/hbase_small.gif" width="70" /></td>
+		</tr>
+	</table>
+	<hr />
+	<table width="100%">
+		<tr>
+			<td valign="top" style="width: 20%;" >
+			<div style="background-color: #eeeeee; font: 14px, Arial;color:#000000; padding:5px; margin-right:5px;">
+				<B>Project </b>
+                <br />
+				<span style="line-height: 24px;">
+				<a href="http://sourceforge.net/projects/bizosyshsearch/files/hsearch-0.90.tar/download" title="Download HSearch"> Downloads </a> <br />
+				<a href="sponsors.html" title="Sponsors"> Sponsors </a> <br />
+				<a href="privacy.html" title="privacy policy"> Privacy policy </a> <br /><br />
+				</span>
+				<b>Documentation </b>
+				<br />
+				<span style="line-height: 24px;">
+					<a href="http://www.bizosys.com/hsearch/0.90/api/index.html"	title="documentation"> 0.90	</a> <br /><br />		
+				</span>
+				<b>Developers </b>
+				<br />
+				<span style="line-height: 24px;">
+				<a href="http://sourceforge.net/tracker/?group_id=373412&atid=1555248"> Issue tracking </a> <br />
+				<a href="http://sourceforge.net/projects/bizosyshsearch/forums/" title="Forums"> Forums </a> <br />
+				<a href="http://bizosyshsearch.cvs.sourceforge.net/bizosyshsearch/" title="Version Control"> Version control </a> <br /><br />
+				</span>
+				</div>
+			</td>
+			<td valign="top" style="width: 80%">
+				<table cellpadding="0" cellspacing="0" width="100%" border="0">
+				<tr>
+				<td width="65%">
+				<h1>Welcome to HSearch!</h1>
+    				<hr size="1" width="95%" />
+				    <ul>
+				    <li><a href="#news">News</a></li>
+				    <li><a href="#overview">Overview</a></li>
+			        <li><a href="#start">Getting Started</a></li>
+				    <li><a href="#involve">Getting Involved</a></li>
+				    <li><a href="#license">License - Apache</a></li>
+				    </ul>
+				</td>
+				<td width="35%" style="border:1px dotted #cccccc; background-color:#eeeeee; padding:3px;">
+				<h3>Useful Links</h3>
+				<ul>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/files/hsearch-0.90.tar/download" title="Download HSearch">Download HSearch</a></li>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/support" title="support">Support</a></li>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/develop" title="browse code">Browse Code</a></li>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/forums" title="forums">Forums</a></li>
+                    <li><a href="http://www.bizosys.com/hsearch/api" title="documentation">Documentation</a></li>
+                    <li>Code Examples - <a href="reader.html" title="Searching">Searching</a>, <a href="writer.html" title="Indexing">Indexing</a></li>
+                </ul>
+				</td>
+				</tr>
+				</table>
+				<h2><a name="news">News</a></h2>
+				January 19th, 2011: HSearch 0.90 released; Download 
+				<a href="http://sourceforge.net/projects/bizosyshsearch/files/HSearch.msi/download" title="HSearch Windows Installer"> Windows Installer!</a>    Or,   
+				<a href="http://sourceforge.net/projects/bizosyshsearch/files/hsearch-0.90.tar/download" title="HSearch Tar">Tar File!</a>
+				<br /><br />
+				December 7th, 2010: HSearch 0.89 released; <a href="http://sourceforge.net/projects/bizosyshsearch/files/Ver 0.89/" title="Download HSearch">Download!</a>
+				<h2><a name="overview">Overview</a></h2>
+				HSearch is an open source, NoSQL Search Engine. 
+				Use it when you need real-time search on your Big Data. 
+				This project's goal is to index over 100 billion records atop your commodity hardware cluster. 
+
+                HSearch is an open source, distributed, multi-format, structured and unstructured content search engine 
+                built on HBase platform.
+                As the complete index is stored in HBase table, it inherits the HBase storable capabilities. 
+                <br /><br />
+                HSearch features include: 
+                <ul>
+                    <li>Multi-XML formats</li>
+                    <li>Record and document level search access control</li>
+                    <li>Continuous index updation</li>
+                    <li>Parallel indexing using multi-machines</li>
+                    <li>Embeddable inside application</li>
+                    <li>A REST-ful Web service gateway that supports XML</li>
+                    <li>Auto sharding</li>
+                    <li>Auto replication</li>
+                </ul>
+                
+                HSearch Performance Readings for 0.90. The test bed is:
+                <ul>
+					<li>Indexed Wikipedia Dump ( Wiki Pages with detail information such as History, Version)</li>
+                	<li>Machine used is an commodity class machine with total 4GB of RAM. <br />Out of this HBase standalone instance has 2GB of RAM only.</li>
+                </ul>
+                <table border=1>
+                <tr ><td>Term</td> <td>Repository Size</td> <td>Found</td> <td>1st Run Response</td><td>2nd Run Response</td></tr>
+				<tr ><td>usa</td> <td>1.1M</td> <td>64829</td> <td>1161ms   </td> <td>    600ms </td></tr>
+				<tr ><td>india </td> <td>     1.1M             </td> <td>   58377   </td> <td>    340ms    </td> <td>    326ms </td></tr>
+				<tr ><td>hill  </td> <td>     1.1M             </td> <td>   48810   </td> <td>    658ms    </td> <td>    430ms </td></tr>
+				<tr><td>usa   </td> <td>     5M               </td> <td>   172883   </td> <td>    2380ms   </td> <td>    1258ms </td></tr>
+				<tr><td>india </td> <td>     5M               </td> <td>   102712   </td> <td>    557ms    </td> <td>    490ms </td></tr>
+				<tr><td>hill  </td> <td>     5M               </td> <td>   108104   </td> <td>    1147ms    </td> <td>   744ms </td></tr>
+				<tr><td>usa   </td> <td>     10M              </td> <td>   283829   </td> <td>    2810ms  </td> <td>    1756ms </td></tr>
+				<tr><td>india </td> <td>     10M              </td> <td>   172787   </td> <td>    781ms   </td> <td>    629ms </td></tr>
+				<tr><td>hill  </td> <td>     10M              </td> <td>   159029   </td> <td>    1410ms  </td> <td>   1076ms </td></tr>               
+				</table>
+				
+				<h2><a name="start">Getting Started</a></h2>
+				 Start by running HSearch examples, importing HSearch project from CVS server at bizosyshsearch.cvs.sourceforge.net
+
+				   <ol>
+                        <li><a href="http://www.bizosys.com/hsearch/api" title="documentation">Learn</a>  about HSearch by reading the documentation.</li>
+                        <li><a href="http://sourceforge.net/projects/bizosyshsearch/files/HSearch.msi/download" title="Download HSearch">Download</a> HSearch from the release page.</li>
+                   </ol>
+                   
+					<h4>Quick Start (<a href="http://sourceforge.net/projects/bizosyshsearch/files/HSearch.msi/download">MSI Installation</a>) </h4>
+					This will index 50000 location information using sample data file and search for a keyword named somerset in it.
+					<ol>
+						<li>Install the MSI.</li>
+						<li>From the Windows Start Menu, Go to HSearch and then click on "Step-1 Start". This will create an tray icon at right bottom part of your windows with letter H.</li>
+						<li>Right click on the icon and click "Start HBase". HBase will be started and a message on console will come (HBase Server started)</li>
+						<li>From the Windows Start Menu, Go to HSearch and then click on "Step - 2 Index Sample Data"</li>
+						<li>From the Windows Start Menu, Go to HSearch and then click on "Step - 3 Search Sample Data"</li>
+					</ol>
+
+					<h4>Quick Start (<a href="http://sourceforge.net/projects/bizosyshsearch/files/hsearch-0.90.tar/download">TAR File</a>)</h4>
+					This will index 50000 location information using sample data file and search for a keyword named somerset in it.
+					<ol>
+						<li>Create a folder "c:\bizosys" and copy "hsearch-0.90.tar" file into this folder.</li>
+						<li>Extract the tar file here. It will create c:\bizosys\hsearch-0.90 folder.</li>
+						<li>Open a command line prompt.  Type
+<br />    <i>cd C:\bizosys\hsearch-0.90\bin</i> </li>
+						<li>Start hsearch tray icon typing command. This will create an icon at right bottom part of your windows desktop shortcut tray. 
+   <br /> <i>hsearch.bat</i> </li>
+						<li>Right click on the icon and click "Start HBase". HBase will be started and a message on console will come (HBase Server started) </li>
+						<li>Open another window and Goto benchmark folder
+<br />   <i>cd C:\bizosys\hsearch-0.90\benchmark</i> </li>
+						<li>Start indexing freebase location databases typing command, 
+  <br /> <i>freebaseW.bat</i> </li>
+						<li>Once indexed, Look for keyword "somerset" 
+						typing command, <br /> <i>query.bat</i>   </li>
+					</ol>	
+				<h2><a name="involve">Getting Involved</a></h2>
+			    HBase is an open source volunteer project. 
+			    We encourage you to learn about the project and contribute your 
+			    expertise. Write to me at
+			    <a href="mailto://abinash@bizosys.com">abinash@bizosys.com</a>
+				<h2><a name="license">License - Apache</a></h2>
+				HSearch is available under the Apache licence. Read details at <a href=" http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+			</td>
+		</tr>
+		</table>
+		<p style="background-color:#eeeeee; font-family:Sans-Serif; font-size:xx-small; padding:5px;">
+		Copyright &copy; 2010 <a href="http://www.bizosys.com">Bizosys Technologies Pvt Ltd.</a>
+		</p>
+</body>
+</html>

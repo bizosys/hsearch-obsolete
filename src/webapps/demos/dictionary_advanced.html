@@ -1,0 +1,184 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    
+	    function indexProcess() {
+	        xmlData = { service: "search", action : "dictionary.addAll", 
+                        hkey: guestKey,
+                        entries: txtXml.value
+                      };
+			callAjax(xmlData, divInsertReq, indexSucess);
+	    }
+	    
+		function indexSucess(data) {
+		    showSucess("Indexing", divInsertReq, data, divInsertRes);
+        }	  
+        
+        
+	    function queryProcess() {
+	        
+	        xmlData = { service: "search", action : "dictionary.list", 
+	                        hkey: guestKey
+	                      };
+			callAjax(xmlData, divQueryReq, querySucess);
+	    }
+	    
+		function querySucess(data) {
+            showSucess("Query", divQueryReq, data, divQueryRes);
+        }	            
+        
+	    function deleteProcess() {
+	        xmlData = { service: "search", action : "dictionary.delete", 
+	                        hkey: guestKey,
+	                        words: txtDelId.value
+	                      };
+			callAjax(xmlData, divDeleteReq, deleteSucess);
+	    }
+	    
+		function deleteSucess(data) {
+		    showSucess("Delete", divDeleteReq, data, divDeleteRes);
+        }        
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Editorial Team Tuning</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>Step 1 of 3: Add documents to Dictionary</h3>
+		    
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtXml">Words:</label>
+                    <textarea cols="40" rows="10" name="txtXml" id="txtXml">
+&lt;list&gt;
+	&lt;aword&gt;
+		&lt;word&gt;hydrogen&lt;/word&gt;
+		&lt;type&gt;gas&lt;/type&gt;
+		&lt;related&gt;helium&lt;/related&gt;
+		&lt;detail&gt;Periodic table 1&lt;/detail&gt;
+		&lt;frequency&gt;1&lt;/frequency&gt;
+	&lt;/aword&gt;
+	&lt;aword&gt;
+		&lt;word&gt;carbon&lt;/word&gt;
+		&lt;type&gt;solid&lt;/type&gt;
+		&lt;related&gt;oxygen&lt;/related&gt;
+		&lt;detail&gt;Periodic table 23&lt;/detail&gt;
+		&lt;frequency&gt;1&lt;/frequency&gt;
+	&lt;/aword&gt;
+&lt;/list&gt;
+                    </textarea>
+                </div>
+            </fieldset>
+
+            <input type=button onclick="indexProcess()" value="Add To Dictionary" />
+
+            <div class="ui-theme-a"  id="divInsertReq"></div><br />
+            <div class="ui-theme-a"  id="divInsertRes"></div> <br />
+
+	        <h3>Step 2 of 3: List complete Dictionary</h3>
+	        
+            <input type=button onclick="queryProcess()" value="Lookup" /a>
+            
+            <div class="ui-theme-a"  id="divQueryReq"></div> <br />
+            <div class="ui-theme-a"  id="divQueryRes"></div> <br />
+	        
+	        <h3>Step 3 of 3: Cleanup Dictionary</h3>
+	        
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDelId">Delete words (Comma Separated List):</label>
+                    <input type="text" name="txtDelId" id="txtDelId" value="hydrogen"  />
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="deleteProcess()" value="Delete Document" />
+            
+            <div class="ui-theme-a"  id="divDeleteReq"></div> <br />
+            <div class="ui-theme-a"  id="divDeleteRes"></div> <br />
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+
+				<!-- Indexing -->
+				<li data-role="list-divider">Indexing</li>
+                <li><a data-ajax="false" href="query_basic.html">Document Querying</a></li>
+				<li><a data-ajax="false" href="query_record.html">Structured Records</a></li>
+				<li><a data-ajax="false" href="query_xml.html">XML Records</a></li>
+				<li><a data-ajax="false" href="index_document.html">Detail Document Indexing</a></li>
+				<li><a data-ajax="false" href="index_custom.html">Flexible Indexing</a></li>
+				<li><a data-ajax="false" href="index_batch.html">Batch Indexing</a></li>
+
+                <!-- User Experience -->
+				<li data-role="list-divider">User Experience</li>
+				<li><a data-ajax="false" href="result_preview.html">Previews</a></li>
+				<li><a data-ajax="false" href="document_date.html">Special searches</a></li>
+				<li><a data-ajax="false" href="dictionary_simple.html">Did You Mean</a></li>
+
+                <!-- Security -->
+				<li data-role="list-divider">Security</li>
+				<li><a data-ajax="false" href="query_access.html">Access Control</a></li>
+				<li><a data-ajax="false" href="document_team.html">Team Restriction</a></li>
+
+                <!-- Miscillineous -->
+				<li data-role="list-divider">Miscillineous</li>
+				<li>Dictionary Management</li>
+				<li><a data-ajax="false" href="result_amount.html">Search Result Limits</a></li>
+				
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li><a data-ajax="false" href="account_create.html">Create Account</a></li>
+				<li><a data-ajax="false" href="account_update.html">Allocate Buckets</a></li>
+			</ul>
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<html>
+<head>
+    <title>HSearch Code Example - Search</title>
+      <style type="text/css">
+        <!--code { font-family: Courier New, Courier; font-size: 10pt; margin: 0px; }-->
+      </style>
+      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body style="font-family: Sans-Serif; font-size: 12px; width: 95%;">
+	<table width="100%">
+		<tr width="100%">
+			<td width="33%"><a href="index.html" title="HSearch Home" style="text-decoration:none;"><img src="hsearch-logo.gif" style="border: 0px;" /></a></td>
+			<td width="33%"></td>
+			<td width="33%">
+				Built using:<br />
+				<img src="http://hadoop.apache.org/mapreduce/images/hadoop-logo.jpg" width="200" />&nbsp;&nbsp;
+				<img src="http://hbase.apache.org/images/hbase_small.gif" width="70" /></td>
+		</tr>
+	</table>
+	<hr />
+<!-- ======================================================== -->
+<!-- = Java Sourcecode to HTML automatically converted code = -->
+<!-- =   Java2Html Converter 5.0 [2006-02-26] by Markus Gebhard  markus@jave.de   = -->
+<!-- =     Further information: http://www.java2html.de     = -->
+<div align="left" class="java">
+<table border="0" cellpadding="3" cellspacing="0" bgcolor="#ffffff">
+   <tr>
+  <!-- start source code -->
+   <td nowrap="nowrap" valign="top" align="left">
+    <code>
+<font color="#3f7f5f">/*</font><br />
+<font color="#3f7f5f">*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://www.apache.org/licenses/LICENSE-2.0</font><br />
+<font color="#3f7f5f">*/</font><br />
+<font color="#7f0055"><b>package&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.index;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">java.util.ArrayList;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">java.util.List;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">junit.framework.TestCase;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.ferrari.TestFerrari;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.common.Field;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.common.HDocument;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.common.HField;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.dictionary.DictEntry;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.dictionary.DictionaryManager;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.query.DocTeaserWeight;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.query.QueryContext;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.query.QueryResult;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.hsearch.util.FileReaderUtil;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.oneline.ApplicationFault;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.oneline.conf.Configuration;</font><br />
+<font color="#7f0055"><b>import&nbsp;</b></font><font color="#000000">com.bizosys.oneline.services.ServiceFactory;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#7f0055"><b>public&nbsp;class&nbsp;</b></font><font color="#000000">IndexWriterTest&nbsp;</font><font color="#7f0055"><b>extends&nbsp;</b></font><font color="#000000">TestCase&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;static&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">main</font><font color="#000000">(</font><font color="#000000">String</font><font color="#000000">[]&nbsp;</font><font color="#000000">args</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriterTest&nbsp;t&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">IndexWriterTest</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">Configuration&nbsp;conf&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">Configuration</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ServiceFactory.getInstance</font><font color="#000000">()</font><font color="#000000">.init</font><font color="#000000">(</font><font color="#000000">conf,&nbsp;</font><font color="#7f0055"><b>null</b></font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">DictionaryManager.getInstance</font><font color="#000000">()</font><font color="#000000">.deleteAll</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">TestFerrari.testRandom</font><font color="#000000">(</font><font color="#000000">t</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexSingleDoc</font><font color="#000000">(</font><font color="#000000">String&nbsp;id,&nbsp;String&nbsp;name,&nbsp;String&nbsp;location</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">TermType&nbsp;ttype&nbsp;=&nbsp;TermType.getInstance</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.types.put</font><font color="#000000">(</font><font color="#2a00ff">&#34;LOCATION&#34;</font><font color="#000000">,&nbsp;</font><font color="#000000">(</font><font color="#7f0055"><b>byte</b></font><font color="#000000">)&nbsp;</font><font color="#000000">-</font><font color="#990000">99</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.persist</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.originalId&nbsp;=&nbsp;id;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.title&nbsp;=&nbsp;name;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields.add</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;LOCATION&#34;</font><font color="#000000">,&nbsp;location</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdoc</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryResult&nbsp;res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#000000">name</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#990000">1</font><font color="#000000">,&nbsp;res.teasers.length</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">DocTeaserWeight&nbsp;dtw&nbsp;=&nbsp;</font><font color="#000000">(</font><font color="#000000">DocTeaserWeight</font><font color="#000000">)</font><font color="#000000">res.teasers</font><font color="#000000">[</font><font color="#990000">0</font><font color="#000000">]</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#000000">id,&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">String</font><font color="#000000">(</font><font color="#000000">dtw.id.toBytes</font><font color="#000000">()))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#000000">name,&nbsp;dtw.title.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">System.out.println</font><font color="#000000">(</font><font color="#000000">res.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexSingleDocTwice</font><font color="#000000">(</font><font color="#000000">String&nbsp;id,&nbsp;String&nbsp;name,&nbsp;String&nbsp;location</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>this</b></font><font color="#000000">.testIndexSingleDoc</font><font color="#000000">(</font><font color="#000000">id,&nbsp;name,&nbsp;location</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>this</b></font><font color="#000000">.testIndexSingleDoc</font><font color="#000000">(</font><font color="#000000">id,&nbsp;name,&nbsp;location</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexMultiDoc</font><font color="#000000">(</font><font color="#000000">String&nbsp;id1,String&nbsp;id2,String&nbsp;name,&nbsp;String&nbsp;location</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">TermType&nbsp;ttype&nbsp;=&nbsp;TermType.getInstance</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.types.put</font><font color="#000000">(</font><font color="#2a00ff">&#34;LOCATION&#34;</font><font color="#000000">,&nbsp;</font><font color="#000000">(</font><font color="#7f0055"><b>byte</b></font><font color="#000000">)&nbsp;</font><font color="#000000">-</font><font color="#990000">99</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.persist</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.originalId&nbsp;=&nbsp;id1;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.title&nbsp;=&nbsp;name;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields.add</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;LOCATION&#34;</font><font color="#000000">,&nbsp;location</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdoc</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc2&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc2.originalId&nbsp;=&nbsp;id2;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc2.title&nbsp;=&nbsp;name;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc2.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc2.fields.add</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;LOCATION&#34;</font><font color="#000000">,&nbsp;location</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdoc2</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryResult&nbsp;res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#000000">name</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#990000">2</font><font color="#000000">,&nbsp;res.teasers.length</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">System.out.println</font><font color="#000000">(</font><font color="#000000">res.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexMultidocMultiTimes</font><font color="#000000">(</font><font color="#000000">String&nbsp;id1,String&nbsp;id2,</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">String&nbsp;name,&nbsp;String&nbsp;location</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">testIndexMultiDoc</font><font color="#000000">(</font><font color="#000000">id1,&nbsp;id2,name,&nbsp;location</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">testIndexMultiDoc</font><font color="#000000">(</font><font color="#000000">id1,&nbsp;id2,name,&nbsp;location</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">testIndexMultiDoc</font><font color="#000000">(</font><font color="#000000">id1,&nbsp;id2,name,&nbsp;location</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexFieldInsert</font><font color="#000000">(</font><font color="#000000">String&nbsp;id,&nbsp;String&nbsp;title</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">TermType&nbsp;ttype&nbsp;=&nbsp;TermType.getInstance</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.types.put</font><font color="#000000">(</font><font color="#2a00ff">&#34;BODY&#34;</font><font color="#000000">,&nbsp;</font><font color="#000000">(</font><font color="#7f0055"><b>byte</b></font><font color="#000000">)&nbsp;</font><font color="#000000">-</font><font color="#990000">99</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.persist</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.originalId&nbsp;=&nbsp;id;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.title&nbsp;=&nbsp;title;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HField&nbsp;fld&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;BODY&#34;</font><font color="#000000">,FileReaderUtil.toString</font><font color="#000000">(</font><font color="#2a00ff">&#34;sample.txt&#34;</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields.add</font><font color="#000000">(</font><font color="#000000">fld</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdoc</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryResult&nbsp;res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#2a00ff">&#34;Comparable&#34;</font><font color="#000000">))</font><font color="#000000">;&nbsp;</font><font color="#3f7f5f">//A&nbsp;word&nbsp;from&nbsp;sample.txt</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">System.out.println</font><font color="#000000">(</font><font color="#000000">res.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexDelete</font><font color="#000000">()&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.originalId&nbsp;=&nbsp;</font><font color="#2a00ff">&#34;BIZOSYS-103&#34;</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.title&nbsp;=&nbsp;</font><font color="#2a00ff">&#34;Ram&nbsp;tere&nbsp;Ganga&nbsp;maili&#34;</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryContext&nbsp;ctx1&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#2a00ff">&#34;Ganga&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdoc</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryResult&nbsp;res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><font color="#000000">ctx1</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">System.out.println</font><font color="#000000">(</font><font color="#2a00ff">&#34;Result:&#34;&nbsp;</font><font color="#000000">+&nbsp;res.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryContext&nbsp;ctx2&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#2a00ff">&#34;Ganga&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.delete</font><font color="#000000">(</font><font color="#2a00ff">&#34;BIZOSYS-103&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>try&nbsp;</b></font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><font color="#000000">ctx2</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">System.out.println</font><font color="#000000">(</font><font color="#2a00ff">&#34;Result:&#34;&nbsp;</font><font color="#000000">+&nbsp;res.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">}&nbsp;</font><font color="#7f0055"><b>catch&nbsp;</b></font><font color="#000000">(</font><font color="#000000">ApplicationFault&nbsp;ex</font><font color="#000000">)&nbsp;{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">System.out.println</font><font color="#000000">(</font><font color="#2a00ff">&#34;Result:&#34;&nbsp;</font><font color="#000000">+&nbsp;ex.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}&nbsp;&nbsp;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexDeleteInFields</font><font color="#000000">()&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryResult&nbsp;res&nbsp;=&nbsp;</font><font color="#7f0055"><b>null</b></font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">TermType&nbsp;ttype&nbsp;=&nbsp;TermType.getInstance</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.types.put</font><font color="#000000">(</font><font color="#2a00ff">&#34;emp&#34;</font><font color="#000000">,&nbsp;</font><font color="#000000">(</font><font color="#7f0055"><b>byte</b></font><font color="#000000">)&nbsp;</font><font color="#000000">-</font><font color="#990000">98</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.types.put</font><font color="#000000">(</font><font color="#2a00ff">&#34;role&#34;</font><font color="#000000">,&nbsp;</font><font color="#000000">(</font><font color="#7f0055"><b>byte</b></font><font color="#000000">)&nbsp;</font><font color="#000000">-</font><font color="#990000">99</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.persist</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">Thread.sleep</font><font color="#000000">(</font><font color="#990000">20</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#3f7f5f">//Step&nbsp;1&nbsp;-&nbsp;Insert</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.originalId&nbsp;=&nbsp;</font><font color="#2a00ff">&#34;BIZOSYS-9812&#34;</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields.add</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;emp&#34;</font><font color="#000000">,&nbsp;</font><font color="#2a00ff">&#34;Swami&nbsp;Vivenkananda&#34;</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields.add</font><font color="#000000">(</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;role&#34;</font><font color="#000000">,&nbsp;</font><font color="#2a00ff">&#34;architect&#34;</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdoc</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#3f7f5f">//Step&nbsp;2&nbsp;-&nbsp;Check&nbsp;in&nbsp;Dictionary</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">DictEntry&nbsp;de&nbsp;=&nbsp;DictionaryManager.getInstance</font><font color="#000000">()</font><font color="#000000">.getDictionary</font><font color="#000000">()</font><font color="#000000">.get</font><font color="#000000">(</font><font color="#2a00ff">&#34;vivenkanand&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertNotNull</font><font color="#000000">(</font><font color="#000000">de</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#990000">1</font><font color="#000000">,&nbsp;de.fldFreq</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#3f7f5f">//Step&nbsp;3&nbsp;-&nbsp;Check&nbsp;in&nbsp;Index</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryContext&nbsp;ctx1&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#2a00ff">&#34;Vivenkananda&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><font color="#000000">ctx1</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#990000">1</font><font color="#000000">,&nbsp;res.teasers.length</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#3f7f5f">//Step&nbsp;4&nbsp;-&nbsp;Delete</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.delete</font><font color="#000000">(</font><font color="#2a00ff">&#34;BIZOSYS-9812&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#3f7f5f">//Step&nbsp;5&nbsp;-&nbsp;Check&nbsp;in&nbsp;Dictionary</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">DictEntry&nbsp;de2&nbsp;=&nbsp;DictionaryManager.getInstance</font><font color="#000000">()</font><font color="#000000">.getDictionary</font><font color="#000000">()</font><font color="#000000">.get</font><font color="#000000">(</font><font color="#2a00ff">&#34;vivenkanand&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertNotNull</font><font color="#000000">(</font><font color="#000000">de2</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#990000">0</font><font color="#000000">,&nbsp;de2.fldFreq</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#3f7f5f">//Step&nbsp;6&nbsp;-&nbsp;Check&nbsp;in&nbsp;Index</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">QueryContext&nbsp;ctx2&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">QueryContext</font><font color="#000000">(</font><font color="#2a00ff">&#34;Vivenkananda&#34;</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">String&nbsp;pipes&nbsp;=&nbsp;</font><font color="#2a00ff">&#34;HQueryParser,&#34;</font><font color="#000000">+</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#2a00ff">&#34;ComputeTypeCodes,QuerySequencing,SequenceProcessor,&#34;&nbsp;</font><font color="#000000">+</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#2a00ff">&#34;ComputeStaticRanking,CheckMetaInfo,ComputeDynamicRanking,BuildTeaser&#34;</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">res&nbsp;=&nbsp;IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.search</font><font color="#000000">(</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ctx2,IndexReader.getInstance</font><font color="#000000">()</font><font color="#000000">.getPipes</font><font color="#000000">(</font><font color="#000000">pipes</font><font color="#000000">))</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">Thread.sleep</font><font color="#000000">(</font><font color="#990000">50</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">assertEquals</font><font color="#000000">(</font><font color="#990000">0</font><font color="#000000">,&nbsp;res.teasers.length</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#7f0055"><b>public&nbsp;</b></font><font color="#7f0055"><b>void&nbsp;</b></font><font color="#000000">testIndexUpdate</font><font color="#000000">(</font><font color="#000000">String&nbsp;keyword1,&nbsp;String&nbsp;keyword2,&nbsp;String&nbsp;keyword3,&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">String&nbsp;keyword4,&nbsp;String&nbsp;keyword5,&nbsp;String&nbsp;keyword6,&nbsp;String&nbsp;keyword7,&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">String&nbsp;keyword8,&nbsp;String&nbsp;keyword9,&nbsp;String&nbsp;keyword10</font><font color="#000000">)&nbsp;</font><font color="#7f0055"><b>throws&nbsp;</b></font><font color="#000000">Exception&nbsp;</font><font color="#000000">{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">String</font><font color="#000000">[]&nbsp;</font><font color="#000000">keywords&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">String</font><font color="#000000">[]&nbsp;{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">keyword1,&nbsp;keyword2,&nbsp;keyword3,&nbsp;keyword4,&nbsp;keyword5,</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">keyword6,&nbsp;keyword7,&nbsp;keyword8,&nbsp;keyword9,&nbsp;keyword10</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">}</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">TermType&nbsp;ttype&nbsp;=&nbsp;TermType.getInstance</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.types.put</font><font color="#000000">(</font><font color="#2a00ff">&#34;fld1&#34;</font><font color="#000000">,&nbsp;</font><font color="#000000">(</font><font color="#7f0055"><b>byte</b></font><font color="#000000">)&nbsp;</font><font color="#000000">-</font><font color="#990000">98</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">ttype.persist</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">StringBuilder&nbsp;sb&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">StringBuilder</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">List&lt;HDocument&gt;&nbsp;hdocs&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;HDocument&gt;</font><font color="#000000">(</font><font color="#990000">5000</font><font color="#000000">)</font><font color="#000000">;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>for&nbsp;</b></font><font color="#000000">(&nbsp;</font><font color="#7f0055"><b>int&nbsp;</b></font><font color="#000000">i=</font><font color="#990000">0</font><font color="#000000">;&nbsp;i&lt;</font><font color="#990000">5000</font><font color="#000000">;&nbsp;i++</font><font color="#000000">)&nbsp;{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HDocument&nbsp;hdoc&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HDocument</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.originalId&nbsp;=&nbsp;</font><font color="#2a00ff">&#34;ORIG_ID:&#34;&nbsp;</font><font color="#000000">+&nbsp;i;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.title&nbsp;=&nbsp;</font><font color="#2a00ff">&#34;TITLE:&#34;&nbsp;</font><font color="#000000">+&nbsp;i;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">sb.delete</font><font color="#000000">(</font><font color="#990000">0</font><font color="#000000">,sb.capacity</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>for&nbsp;</b></font><font color="#000000">(</font><font color="#000000">String&nbsp;k&nbsp;:&nbsp;keywords</font><font color="#000000">)&nbsp;{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">sb.append</font><font color="#000000">(</font><font color="#000000">k</font><font color="#000000">)</font><font color="#000000">.append</font><font color="#000000">(</font><font color="#000000">i</font><font color="#000000">)</font><font color="#000000">.append</font><font color="#000000">(</font><font color="#990000">'&nbsp;'</font><font color="#000000">)</font><font color="#000000">;&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">}&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">ArrayList&lt;Field&gt;</font><font color="#000000">()</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">HField&nbsp;fld&nbsp;=&nbsp;</font><font color="#7f0055"><b>new&nbsp;</b></font><font color="#000000">HField</font><font color="#000000">(</font><font color="#2a00ff">&#34;fld1&#34;</font><font color="#000000">,sb.toString</font><font color="#000000">())</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdoc.fields.add</font><font color="#000000">(</font><font color="#000000">fld</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">hdocs.add</font><font color="#000000">(</font><font color="#000000">hdoc</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.insert</font><font color="#000000">(</font><font color="#000000">hdocs</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#7f0055"><b>for&nbsp;</b></font><font color="#000000">(&nbsp;</font><font color="#7f0055"><b>int&nbsp;</b></font><font color="#000000">i=</font><font color="#990000">0</font><font color="#000000">;&nbsp;i&lt;</font><font color="#990000">5000</font><font color="#000000">;&nbsp;i++</font><font color="#000000">)&nbsp;{</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">IndexWriter.getInstance</font><font color="#000000">()</font><font color="#000000">.delete</font><font color="#000000">(</font><font color="#2a00ff">&#34;ORIG_ID:&#34;&nbsp;</font><font color="#000000">+&nbsp;i</font><font color="#000000">)</font><font color="#000000">;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;&nbsp;&nbsp;</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><font color="#000000">}</font><br />
+<font color="#ffffff">&nbsp;&nbsp;</font><br />
+<font color="#ffffff"></font><br />
+<font color="#000000">}</font></code>
+    
+   </td>
+  <!-- end source code -->
+   </tr>
+</table>
+</div>
+<!-- =       END of automatically generated HTML code       = -->
+<!-- ======================================================== -->
+
+
+</body></html>

@@ -1,0 +1,247 @@
+body {
+	background-color:#ffffff; background-image:url(images/back_1.gif);
+	margin:24px;
+}
+H1{
+	font-family: Arial;
+	color:#1a1b1c;
+	font-size: 20px;
+	height: 22px;
+	margin-top: 0px;
+	margin-bottom: 2px;
+}
+H2{
+	font-family: Garamond;
+	font-weight: bold;
+	font-size: 18px;
+	border-style: solid;
+	border-color: #BBBBBB;
+	border-left: 0;
+	border-bottom-width: 1px;
+	border-top-width: 0;
+	border-right: 0;	
+	padding: 2px;
+	height: 22px;
+	margin-top: 12px;
+	margin-bottom: 12px;
+}
+
+H3{
+	font-family: Arial;
+	color:#6699ff;
+	font-weight: bold;
+	font-size: 14px;
+	padding: 2px;
+	height: 22px;
+	margin-top: 12px;
+	margin-bottom: 2px;
+}
+a:active {
+	color: Blue;
+	text-decoration: none;
+}
+a:visited {
+	color: Blue;
+	text-decoration: none;		
+}
+a:hover {
+	color: #FF0000;
+	text-decoration: none;
+}
+a:link {
+	color: Blue;
+	text-decoration: none;	
+}
+P{
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 10pt;
+	line-height: 1.6;
+}
+P.smalltext{
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 10px;
+}
+
+#DIVpagemaster{
+	width:780px; height: auto; background-color:#FFFFFF; z-index:1;
+}
+#DIVglobal{
+	width: 780px;
+	height: 24px;
+	background-color: Black;
+}
+#DIVglobalcontent{
+	padding: 4px;
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;
+	color: #FFFFFF;	
+}
+#DIVheader{
+	width: 780px;
+	height: 173px;
+	text-align: left;
+	background-image: url(images/header_2.jpg);
+	font-family: Trebuchet MS, Calibri, Verdana;
+}
+#DIVmain {
+	width: 780px;
+	text-align: left;
+	background-color: #FFFFFF;
+	position: relative;
+	top: 0px;
+	top: 0px;
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;
+}
+#DIVfooter{
+	clear: left;
+	width: 780px;
+	height: auto;
+	text-align: left;
+	background-color: #ECECFF;
+	position: relative;
+	top: inherit;
+	left: inherit;
+}
+#DIVfootercontent{
+	padding: 4px;
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;	
+}
+#DIVleftnav{
+	position: absolute;
+	top: 10px;
+	left: 0px;
+	width: 180px;
+	height: auto;
+	font-family: Trebuchet MS, Calibri, Verdana;
+}
+#DIVnavbar{
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;
+	border-style: dotted;
+	border-color: #BBBBBB;
+	border-left: 0;
+	border-bottom-width: 1px;
+	border-top-width: 0;
+	border-right: 0;
+	padding: 5px;
+	margin: 0px;
+	width: 162px;	
+}
+#DIVnavbar_selected{
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;
+	border-style: dotted;
+	border-color: #BBBBBB;
+	border-left: 0;
+	border-bottom-width: 1px;
+	border-top-width: 0;
+	border-right: 0;
+	padding: 5px;
+	margin: 0px;
+	width: 162px;
+	background-image: url(images/selected.gif);
+	background-repeat: no-repeat;
+	background-position: bottom;
+}
+#DIVreservepod{
+	margin-top: 30px;
+	margin-left: 5px;
+}
+#DIVcontent{
+	position: relative;
+	left: 182px;
+	top: 0px;
+	width: 598px;
+	height: auto;
+	background-color: #FFFFFF;	
+}
+
+#DIVcontentleft{
+	float: left;
+	width: 340px;
+	height: auto;	
+	padding: 4px;
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;
+	border-style: dotted;
+	border-color: #BBBBBB;
+	border-left-width: 1px;
+	border-bottom: 0;
+	border-top-width: 0;
+	border-right-width: 1px;
+	background-color: #FFFFFF;
+}
+
+#DIVcontentright{
+	float: left;
+	width: 240px;
+	height: auto;
+	padding: 4px;
+	font-family: Trebuchet MS, Calibri, Verdana;
+	font-size: 12px;
+	background-color: #FFFFFF;	
+}
+input {
+	border-color: #0F0F0F;
+	border-width: 1px;
+	height: 20px;
+	margin-bottom: 4px;
+	padding: 0px;
+}
+
+input.button{
+	background-color: #DEC467;
+	border: '1px;' 'solid' '#000000';
+	width: 142px;
+	margin-top: 4px;
+}
+
+table
+{ 
+	border: 1px #6699CC solid;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	margin-top: 0px;
+}
+
+
+table td
+{
+	border: 1px solid #dcdcdc;
+	padding-bottom:12px;
+	padding-left:6px;
+}
+
+.greydiv 
+{
+	background-color:#cccccc;
+	height: 18px; 
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+	font-size: 10pt;
+	vertical-align: middle; 
+	padding-bottom: 12px; 
+	padding-top: 6px;
+}
+
+.stamp{
+	font-family: Trebuchet MS, Verdana, Arial, Sans-Serif;
+	font-size: 8pt;
+	color: #4A4A4A;
+}
+
+.restCallButton 
+{
+	margin-top:8px;font-weight:bold;padding:1px; cursor:pointer	
+}
+
+.restRequest
+{
+	background-color:#ffffff; text-align:left;padding:24px;
+}
+
+.restResponse
+{
+	background-color:#ffffff;text-align:left;padding:24px;
+}

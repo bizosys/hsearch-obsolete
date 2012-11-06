@@ -1,0 +1,193 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    
+	    function onCall() {
+	        xmlData = { service: "management", action : "account.get", 
+                        hkey: txtAPI.value
+                      };
+			callAjax(xmlData, divReq, onSucess);
+	    }
+	    
+		function onSucess(data) {
+		    var isError = (data.indexOf("<error>") != -1) ;
+		    if ( isError ) {
+		        divReq.innerHTML = "<h1>Error during processing</h1>";
+                var xml = $.parseXML( data ); 
+                $error = $(xml).find( "error" ); 
+                divRes.innerHTML = "<font color=\"red\">" + $error.text() + "</font>";
+		    } else {
+		        divReq.innerHTML = "";
+		        divName.style.display = "block";
+		        divTotalBucket.style.display = "block";
+		        divCurrBucket.style.display = "block";
+		        divMaxBuckets.style.display = "block";
+		        btnAllocate.style.display = "block";
+		        divNewBuckets.style.display = "block";
+                var xml = $.parseXML( data );
+                $(xml).find('account').each(function(){
+                    txtName.value = $(this).find("name").text();
+                    txtBody.value = $(this).find("notes").text();
+                    txtCurrBucket.value = $(this).find("cursor").text();
+                    txtMaxBuckets.value = ( $(this).find("maxbuckets").text() );
+                    var allBuckets = "";
+                    $(this).find("buckets").each( function(){
+                        if (allBuckets != "" ) allBuckets = allBuckets + ",";
+                        allBuckets = allBuckets +  $(this).find("bucket").text();
+                    } );
+                    txtBuckets.value = allBuckets;
+                } );
+                divRes.innerHTML = "";
+		    }
+        }	
+        
+	    function onAllocate() {
+	        xmlData = { service: "management", action : "account.buckets.set", 
+                        hkey: txtAPI.value,
+                        buckets: txtNewBuckets.value
+                      };
+			callAjax(xmlData, divReq, onAllocateSucess);
+	    }
+
+		function onAllocateSucess(data) {
+		    var isError = (data.indexOf("<error>") != -1) ;
+		    if ( isError ) {
+		        divReq.innerHTML = "<h1>Error during processing</h1>";
+                var xml = $.parseXML( data ); 
+                $error = $(xml).find( "error" ); 
+                divRes.innerHTML = "<font color=\"red\">" + $error.text() + "</font>";
+		    } else {
+		        divReq.innerHTML = "";
+		        divRes.innerHTML = "<h2>Sucessfully Allocated</h2>";
+		    }
+        }		    
+	                      
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Account Management Console</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>Allocate Buckets</h3>
+		    
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtAPI">API Key:</label>
+                    <input type="text" name="txtAPI" id="txtAPI" value=""  />
+                </div>
+            </fieldset>
+
+		    <fieldset>
+                <div data-role="fieldcontain" style="display:none" id="divName">
+                    <label for="txtName"></label>
+                    <input type="text" name="txtName" id="txtName" value=""  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain" style="display:none" id="divMaxBuckets">
+                    <label for="txtMaxBuckets">Allocated Maximum Buckets:</label>
+                    <input type="number" name="txtMaxBuckets" id="txtMaxBuckets" value=""  />
+                </div>
+            </fieldset>
+            
+
+		    <fieldset>
+                <div data-role="fieldcontain" style="display:none" id="divTotalBucket">
+                    <label for="txtBuckets">Allocated Bucket Serials:</label>
+                    <input type="number" name="txtBuckets" id="txtBuckets" value=""  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain" style="display:none" id="divCurrBucket">
+                    <label for="txtCurrBucket">Bucket Used Till:</label>
+                    <input type="number" name="txtCurrBucket" id="txtCurrBucket" value=""  />
+                </div>
+            </fieldset>
+
+		    <fieldset>
+                <div data-role="fieldcontain" style="display:none" id="divBody">
+                    <label for="txtBody">Account Details</label>
+                    <input type="text" name="txtBody" id="txtBody" value=""  />
+                </div>
+            </fieldset>
+
+            
+            <input type=button onclick="onCall()" value="Load Account" id="btnLoad" />
+            
+            <h2>Allocate Desired Buckets</h2>
+		    <fieldset>
+                <div data-role="fieldcontain" style="display:none" id="divNewBuckets">
+                    <label for="txtNewBuckets">Reset Maximum Buckets Limit</label>
+                    <input type="number" name="txtNewBuckets" id="txtNewBuckets" value=""  />
+                </div>
+            </fieldset>            
+            
+            <input type=button onclick="onAllocate()" value="Allocate Buckets" id="btnAllocate" style="display:none" />
+
+            <div class="ui-theme-a"  id="divReq"></div><br />
+            <div class="ui-theme-a"  id="divRes"></div> <br />
+
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li><a data-ajax="false" href="account_create.html">Create Account</a></li>
+				<li>Allocate Buckets</li>
+			</ul>
+			
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

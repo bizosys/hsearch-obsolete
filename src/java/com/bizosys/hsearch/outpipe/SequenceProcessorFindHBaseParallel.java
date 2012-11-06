@@ -88,9 +88,8 @@ class SequenceProcessorFindHBaseParallel extends SequenceProcessorFindHBase {
 			byte[] row = null;
 			boolean hasTypeFilter = ( DocumentType.NONE_TYPECODE != term.docTypeCode 
 				|| TermType.NONE_TYPECODE != term.termTypeCode);
-			Set<Integer> ignorePos = (hasTypeFilter) ? new HashSet<Integer>() :null;
 			
-			readScanner(scanner, familyB, nameB, storedB, row, hasTypeFilter, ignorePos);
+			readScanner(scanner, familyB, nameB, storedB, row, hasTypeFilter);
 			
 			
 		} catch ( IOException ex) {

@@ -1,0 +1,2 @@
+Repetation on dictionary types.
+<aword><word>spine</word><type>attachment,body,admitdiagdesc,body,attachment,body,attachment,body,admitdiagdesc,body,attachment,body,admitdiagdesc,body,admitdiagdesc,body,admitdiagdesc,body,attachment,body,attachment,body,attachment,body,admitdiagdesc,body,admitdiagdesc,body,refphysicians,admitdiagdesc,body,refphysicians,admitdiagdesc,body,admitdiagdesc,body,admitdiagdesc,body,attachment,body</type><frequency>76</frequency></aword>

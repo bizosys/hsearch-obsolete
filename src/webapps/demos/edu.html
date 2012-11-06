@@ -1,0 +1,94 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Kid Safe Search Engine</title>
+
+	<script src="jquery.js"></script>
+	<script src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+    <script type="text/javascript">
+        function appendAge(queryString) {
+            if ( selectAge.value.indexOf("all") == -1 ) {
+                queryString = queryString + " age:" + selectAge.value;
+            }
+            return queryString;
+        }
+        
+        function openInNewUrl() {
+            var queryStr = txtSearch.value;
+
+            if ( queryStr == "" ) return;
+            document.location.href = "edu_search.html?query=" + appendAge(queryStr);
+        }
+    
+    </script>
+    
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Kid Safe Search</h1>
+	    <a href="edu.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+            <div data-role="controlgroup" data-type="horizontal" style="margin-left:12px" onkeypress="keypress();">
+	            <center>
+	                <table>
+	                    <tr>
+	                        <td>
+	                            <input style="width:400px" type="text" name="txtSearch" id="txtSearch" onfocus="true" value="" />
+	                        </td>
+	                        <td>
+	                            <select data-type="horizontal" name="selectAge" id="selectAge" data-native-menu="false" >
+		                            <option value="all">All</option>
+		                            <option value="kg">KinderGarten</option>
+		                            <option value="primary">primary</option>
+		                            <option value="middle">Middle</option>
+		                            <option value="high">High</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                </table>
+                    
+	                <br />
+                    <input data-role="none" name="btnFind" type=button onclick="openInNewUrl();" value="Find" style="width:100px;height:32px" />
+	            </center>
+            </div>
+
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+				<!-- Indexing -->
+				<li><a data-ajax="false" href="edu_nursery.html">Children</a></li>
+                <li><a data-ajax="false" href="edu_biology.html">Biology</a></li>
+				<li><a data-ajax="false" href="edu_chemistry.html">Chemistry</a></li>
+				<li><a data-ajax="false" href="edu_mathematics.html">Mathematics</a></li>
+				<li><a data-ajax="false" href="edu_physics.html">Physics</a></li>
+				<li><a data-ajax="false" href="edu_astrophysics.html">Astro Physics</a></li>
+				<li><a data-ajax="false" href="edu_history.html">History</a></li>
+				<li><a data-ajax="false" href="edu_environment.html">Environment</a></li>
+				<li><a data-ajax="false" href="edu_geoscience.html">Geo Science</a></li>
+				<li><a data-ajax="false" href="edu_dance.html">Dance</a></li>
+				<li><a data-ajax="false" href="edu_music.html">Music</a></li>
+			</ul>
+
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

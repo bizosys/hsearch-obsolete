@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>HSearch - The NoSQL Search</title>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17511515-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body style="font-family: Sans-Serif; font-size: 12px; width: 95%;">
+	<table width="100%">
+		<tr width="100%">
+			<td width="33%"><a href="index.html" title="HSearch Home" style="text-decoration:none;"><img src="hsearch-logo.gif" style="border: 0px;" /></a></td>
+			<td width="33%"></td>
+			<td width="33%">
+				Built using:<br />
+				<img src="http://hadoop.apache.org/mapreduce/images/hadoop-logo.jpg" width="200" />&nbsp;&nbsp;
+				<img src="http://hbase.apache.org/images/hbase_small.gif" width="70" /></td>
+		</tr>
+	</table>
+	<hr />
+	<table width="100%">
+		<tr>
+			<td valign="top" style="width: 20%;" >
+			<div style="background-color: #eeeeee; font: 14px, Arial;color:#000000; padding:5px; margin-right:5px;">
+				<B>Project </b>
+                <br />
+				<span style="line-height: 24px;">
+				<a href="http://sourceforge.net/projects/bizosyshsearch/files/Ver 0.89/" title="Download HSearch"> Downloads </a> <br />
+				<a href="sponsors.html" title="Sponsors"> Sponsors </a> <br />
+				<a href="privacy.html" title="privacy policy"> Privacy policy </a> <br /><br />
+				</span>
+				<b>Documentation </b>
+				<br />
+				<span style="line-height: 24px;">
+				<a href="http://www.bizosys.com/hsearch/api" title="documentation"> 0.89 </a> <br /><br />
+				</span>
+				<b>Developers </b>
+				<br />
+				<span style="line-height: 24px;">
+				<a href="http://sourceforge.net/tracker/?group_id=373412&atid=1555248"> Issue tracking </a> <br />
+				<a href="http://sourceforge.net/projects/bizosyshsearch/forums/" title="Forums"> Forums </a> <br />
+				<a href="http://bizosyshsearch.cvs.sourceforge.net/bizosyshsearch/" title="Version Control"> Version control </a> <br /><br />
+				</span>
+				</div>
+			</td>
+			<td valign="top" style="width: 80%">
+				<table cellpadding="0" cellspacing="0" width="100%" border="0">
+				<tr>
+				<td width="65%">
+				<h1>Welcome to HSearch!</h1>
+    				<hr size="1" width="95%" />
+				    <ul>
+				    <li><a href="#news">News</a></li>
+				    <li><a href="#overview">Overview</a></li>
+			        <li><a href="#start">Getting Started</a></li>
+				    <li><a href="#involve">Getting Involved</a></li>
+				    <li><a href="#license">License - Apache</a></li>
+				    </ul>
+				</td>
+				<td width="35%" style="border:1px dotted #cccccc; background-color:#eeeeee; padding:3px;">
+				<h3>Useful Links</h3>
+				<ul>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/files/Ver 0.89/" title="Download HSearch">Download HSearch</a></li>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/support" title="support">Support</a></li>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/develop" title="browse code">Browse Code</a></li>
+                    <li><a href="http://sourceforge.net/projects/bizosyshsearch/forums" title="forums">Forums</a></li>
+                    <li><a href="http://www.bizosys.com/hsearch/api" title="documentation">Documentation</a></li>
+                    <li>Code Examples - <a href="reader.html" title="Searching">Searching</a>, <a href="writer.html" title="Indexing">Indexing</a></li>
+                </ul>
+				</td>
+				</tr>
+				</table>
+				<h2><a name="news">News</a></h2>
+				December 7th, 2010: HSearch 0.89 released; <a href="http://sourceforge.net/projects/bizosyshsearch/files/Ver 0.89/" title="Download HSearch">Download!</a>
+				<h2><a name="overview">Overview</a></h2>
+				HSearch is an open source, NoSQL Search Engine. 
+				Use it when you need real-time search on your Big Data. 
+				This project's goal is to index over 100 billion records atop your commodity hardware cluster. 
+
+                HSearch is an open source, distributed, multi-format, structured and unstructured content search engine 
+                built on HBase platform.
+                As the complete index is stored in HBase table, it inherits the HBase storable capabilities. 
+                <br /><br />
+                HSearch features include: 
+                <ul>
+                    <li>Multi-XML formats</li>
+                    <li>Record and document level search access control</li>
+                    <li>Continuous index updation</li>
+                    <li>Parallel indexing using multi-machines</li>
+                    <li>Embeddable inside application</li>
+                    <li>A REST-ful Web service gateway that supports XML</li>
+                    <li>Auto sharding</li>
+                    <li>Auto replication</li>
+                </ul>
+				<h2><a name="start">Getting Started</a></h2>
+				 Start by running HSearch examples, importing HSearch project from CVS server at bizosyshsearch.cvs.sourceforge.net
+
+				   <ol>
+                        <li><a href="http://www.bizosys.com/hsearch/api" title="documentation">Learn</a>  about HSearch by reading the documentation.</li>
+                        <li><a href="http://sourceforge.net/projects/bizosyshsearch/files/Ver 0.89/" title="Download HSearch">Download</a> HSearch from the release page.</li>
+                   </ol>
+				<h2><a name="involve">Getting Involved</a></h2>
+			    HBase is an open source volunteer project. 
+			    We encourage you to learn about the project and contribute your 
+			    expertise. Write to me at
+			    <a href="mailto://abinash@bizosys.com">abinash@bizosys.com</a>
+				<h2><a name="license">License - Apache</a></h2>
+				HSearch is available under the Apache licence. Read details at <a href=" http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+			</td>
+		</tr>
+		</table>
+		<p style="background-color:#eeeeee; font-family:Sans-Serif; font-size:xx-small; padding:5px;">
+		Copyright &copy; 2010 <a href="http://www.bizosys.com">Bizosys Technologies Pvt Ltd.</a>
+		</p>
+</body>
+</html>

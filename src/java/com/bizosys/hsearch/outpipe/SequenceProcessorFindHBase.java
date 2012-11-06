@@ -148,9 +148,8 @@ class SequenceProcessorFindHBase implements Callable<Object> {
 			byte[] row = null;
 			boolean hasTypeFilter = ( DocumentType.NONE_TYPECODE != term.docTypeCode 
 				|| TermType.NONE_TYPECODE != term.termTypeCode);
-			Set<Integer> ignorePos = (hasTypeFilter) ? new HashSet<Integer>() :null;
 			
-			readScanner(scanner, familyB, nameB, storedB, row, hasTypeFilter, ignorePos);
+			readScanner(scanner, familyB, nameB, storedB, row, hasTypeFilter);
 			
 			
 		} catch ( IOException ex) {
@@ -173,7 +172,7 @@ class SequenceProcessorFindHBase implements Callable<Object> {
 	 * @param hasTypeFilter
 	 * @param ignorePos
 	 */
-	protected void readScanner(ResultScanner scanner, byte[] familyB, byte[] nameB, byte[] storedB, byte[] row, boolean hasTypeFilter, Set<Integer> ignorePos) {
+	protected void readScanner(ResultScanner scanner, byte[] familyB, byte[] nameB, byte[] storedB, byte[] row, boolean hasTypeFilter) {
 		TermList lastTermL;
 		boolean hasElementsLeft;
 		
@@ -197,7 +196,7 @@ class SequenceProcessorFindHBase implements Callable<Object> {
 				hasElementsLeft = foundTermL.intersect(lastTermL);
 				if ( ! hasElementsLeft ) continue;
 			}
-			
+
 			/**
 			 * There are definite ID subsets in this bucket.
 			 */ 

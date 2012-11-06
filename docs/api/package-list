@@ -1,0 +1,15 @@
+com.bizosys.hsearch.common
+com.bizosys.hsearch.dictionary
+com.bizosys.hsearch.facet
+com.bizosys.hsearch.filter
+com.bizosys.hsearch.hbase
+com.bizosys.hsearch.index
+com.bizosys.hsearch.inpipe
+com.bizosys.hsearch.inpipe.util
+com.bizosys.hsearch.lang
+com.bizosys.hsearch.outpipe
+com.bizosys.hsearch.query
+com.bizosys.hsearch.schema
+com.bizosys.hsearch.shard
+com.bizosys.hsearch.util
+org.apache.hadoop.hbase.client

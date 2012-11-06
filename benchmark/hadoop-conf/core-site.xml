@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+        <property>
+          <name>hadoop.home</name>
+          <value>/mnt/hsearch/hadoop</value>
+        </property>
+
+        <property>
+          <name>metadata.dir</name>
+          <value>/data/0</value>
+          <description>Where the NameNode metadata should be stored</description>
+        </property>
+
+	<property>
+  	  <name>fs.default.name</name>
+  	  <value>hdfs://master1:54310</value>
+  	  <description>The name of the default file system.  A URI whose scheme and authority determine the FileSystem implementation.  The uri's scheme determines the config property (fs.SCHEME.impl) naming the FileSystem implementation class.  The uri's authority is used to determine the host, port, etc. for a filesystem.
+	  </description>
+	</property>
+
+        <property>
+          <name>io.file.buffer.size</name>
+          <value>16384</value>
+          <description>
+                  Read/write buffer size used in SequenceFiles (should be in multiples of the hardware page size All Intel processors have 4KiB pages. Means 4096 In a one machine cluster, I am making this as small as possible continuous streaming.  In KB 65536 Means 64KB. 16KB starting 16384.  Typical value for a 250 to 2000 nodes is 32768-131072
+          </description>
+        </property>
+
+        <property>
+          <name>io.seqfile.compress.blocksize</name>
+          <value>4096</value>
+          <description>
+               The minimum block size for compression in block compressed SequenceFiles We will compress a minimum 4KB file, as this hels us to read less.
+          </description>
+        </property>
+
+        <property>
+          <name>hadoop.tmp.dir</name>
+          <value>${metadata.dir}/tmp/hadoop</value>
+          <description>A base for other temporary directories.</description>
+        </property>
+
+        <property>
+          <name>fs.checkpoint.dir</name>
+          <value>${hadoop.tmp.dir}/dfs/namesecondary</value>
+          <description>File system checkpoint directory</description>
+        </property>
+
+        <property>
+          <name>io.compression.codecs</name>
+          <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.BZip2Codec
+         </value>
+        </property>
+
+        <property>
+          <name>io.compression.codec.lzo.class</name>
+          <value>com.hadoop.compression.lzo.LzoCodec</value>
+        </property>
+
+</configuration>

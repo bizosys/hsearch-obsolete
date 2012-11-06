@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Document Search API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+    <script type="text/javascript">
+        function callMethod() {
+            var hkey=txtHkey.value;
+            
+            var url= rootUrl + 
+                "?service=search&action=document.search&hkey=" + hkey + 
+                "&query=" + txtQuery.value;
+                
+            divReq.innerHTML = "<h2>Click following link to view Formatted XML via GET</h2><a href=\"" + url + "\">" + url + "</a>";
+            
+            xmlData = { service: "search", 
+                        action: "document.search", 
+                        hkey: hkey,
+                        query: txtQuery.value
+                      };
+	        callAjax(xmlData, divRes, callRes);
+        }
+        
+		function callRes(data) {
+		    showSucess("Search Rest API:", data, divRes);
+        }	  
+        
+    </script>
+    
+</head>
+
+<body>
+    <span style="font-size:24px">document.search</span> <br />
+    <a href="index.html">REST API</a> . <a href="#">document.search</a>
+    <br /><br />
+    <hr />
+        Searches documents from the index.
+    <br /><br />
+
+ <h1>Parameters</h1>
+ <br />
+ <table style="width:80%">
+    <tr>
+        <td style="width:15%;padding-bottom:4px;"><b>Name</b></td>
+        <td style="width:10%;padding-bottom:4px;"><b>Type</b></td>
+        <td style="width:75%;padding-bottom:4px;"><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>query</td>
+        <td>String</td>
+        <td>A Query. HSearch respects many reserved keywords. Following table describes these
+        reserve keywords and their meaning. <br /><br />
+        <table>
+            <tr>
+                <td  class="greydiv">Reserve Word</td>
+                <td class="greydiv">Description</td>
+                <td class="greydiv">Example</td>
+            </tr>
+            <tr>
+                <td>page</td>
+                <td>How many matching documents are shown per search result page.</td>
+                <td>page:25</td>
+            </tr>
+            <tr>
+                <td>scroll</td>
+                <td>Scroll to a document position. If we are showing records in page 2 we need to scroll to 26</td>
+                <td>scroll:26</td>
+            </tr>
+            <tr>
+                <td>typ</td>
+                <td>Search with in the given document type</td>
+                <td>typ:employee</td>
+            </tr>            
+            <tr>
+                <td>ste</td>
+                <td>Search with in the matching document state</td>
+                <td>ste:active</td>
+            </tr>            
+            <tr>
+                <td>createdb</td>
+                <td>Find document created before given date time stamp (Long value)</td>
+                <td>createdb:31536000</td>
+            </tr>            
+            <tr>
+                <td>createda</td>
+                <td>Find document created after given date time stamp (Long value)</td>
+                <td>createda:31536000</td>
+            </tr>            
+            <tr>
+                <td>modifieda</td>
+                <td>Find document modified after date time stamp (Long value)</td>
+                <td>modifieda:31536000</td>
+            </tr>            
+            <tr>
+                <td>modifiedb</td>
+                <td>Find document modified before date time stamp (Long value)</td>
+                <td>modifiedb:31536000</td>
+            </tr>            
+            <tr>
+                <td>mfl</td>
+                <td>Number of documents on which dynamic ranking will be carried on. A bigger value increases the quality but slows down the query response.</td>
+                <td>mfl:100</td>
+            </tr>            
+            <tr>
+                <td>dfl</td>
+                <td>Number of documents to be fetched</td>
+                <td>dfl:25</td>
+            </tr>            
+            <tr>
+                <td>tsl</td>
+                <td>Teaser section length of the shown best matching section of the documens.</td>
+                <td>tsl:500</td>
+            </tr>            
+            <tr>
+                <td>cluster</td>
+                <td>nlp = Clustering using Natual Language analysis.</td>
+                <td>cluster:nlp</td>
+            </tr>            
+        </table>
+        
+        </td>
+    </tr>
+   <tr>
+        <td>user</td>
+        <td>User</td>
+        <td>
+            A User object is passed. If the document is guarded by access, this helps
+            to fetch only view allowed documents. <br />
+            This is optional and by default it runs in anonymous mode.
+<pre>
+&lt;user&gt;
+  &lt;cn&gt;common name&lt;/cn&gt;
+  &lt;o&gt;o&lt;/o&gt;
+  &lt;dc&gt;dc&lt;/dc&gt;
+  &lt;ou&gt;org unit&lt;/ou&gt;
+  &lt;roles&gt;
+    &lt;string&gt;role1&lt;/string&gt;
+    &lt;string&gt;role2&lt;/string&gt;
+  &lt;/roles&gt;
+  &lt;teams&gt;
+    &lt;string&gt;team1&lt;/string&gt;
+    &lt;string&gt;team2&lt;/string&gt;
+  &lt;/teams&gt;
+&lt;/user>
+</pre>
+            
+        </td>
+    </tr>        
+    <tr>
+        <td>hkey</td>
+        <td>String</td>
+        <td>The API Key. If you don't have an account key, You can 
+        <a href="../demos/account_create.html" style="font-size:20px">Create A Key Here.</a></td>
+    </tr>    
+ </table>
+ 
+ <br />
+ <h1>Response</h1>
+ <br />
+ On sucess it returns <br /><br />
+ <div class="greydiv" style="height:auto; padding-left:24px">
+ <b>OK</b>
+ </div>
+ <br />
+ In case of error, the error message is inside XML. An error message format is, <br />
+ 
+ The Error response format is, 
+ <br /><br />
+ <div class="greydiv" style="width:100%; height:120px">
+    <pre>
+        &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;result&gt;
+            &lt;error&gt;
+                &lt;msg&gt;Failure : SearchService: ...
+            &lt;/error&gt;
+        &lt;/result&gt;
+    </pre>
+ </div>
+ 
+ <br />
+
+ <h1>Test Console</h1>
+ <br />
+ <table style="border:none;width:90%" class="greydiv">
+    <tr>
+        <td rowspan="2" valign=top style="padding-top:24px">
+            <b>hkey</b> <br />
+            <input id="txtHkey" style="margin-top:8px;width:90%" type="text" value="50BFB2F8337ADC32FC5866EFF998D608" />
+            
+            <br /><br /><br />
+            <b>query</b>
+            <br />
+            <input id="txtQuery" style="margin-top:8px;width:90%" type="text" value="hello" />
+            <br /><br /><br />
+
+            <input class="restCallButton" type="button" value="Call Method" onclick="callMethod()" />
+            
+        </td>
+        <td style="padding:40px">
+            <div class="restRequest" id="divReq">
+                <a href="../service.html?service=search&action=document.query&hkey=">
+                    ../service.html?service=search&action=document.query&hkey=.... </a>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding:40px">
+            <div class="restResponse" id="divRes">
+                Click "Call Method" to see the response here..
+            </div>
+        </td>
+    </tr>
+    
+ </table>
+ 
+</body>
+</html>
+

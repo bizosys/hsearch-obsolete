@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<configuration>
+
+	<property>
+	  <name>io.file.buffer.size</name>
+	  <value>16384</value>
+	  <description>Read/write buffer size used in SequenceFiles
+		  (should be in multiples of the hardware page size) 
+		  Typical value for a 250 to 2000 nodes is 32768-131072
+	  </description>
+	</property>
+	
+	<property>
+	  <name>io.seqfile.compress.blocksize</name>
+	  <value>4096</value>
+	  <description>
+	  	The minimum block size for compresson in block compressed sequence files.
+	  </description>
+	</property>	
+	
+	<property>
+		<name>io.compression.codecs</name>
+		<value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,com.hadoop.compression.lzo.LzoCodec,org.apache.hadoop.io.compress.BZip2Codec</value>
+	</property>
+
+	<property>
+		<name>io.compression.codec.lzo.class</name>
+		<value>com.hadoop.compression.lzo.LzoCodec</value>
+	</property>
+
+</configuration>

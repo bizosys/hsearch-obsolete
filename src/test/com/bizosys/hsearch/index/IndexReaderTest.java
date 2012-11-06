@@ -57,7 +57,7 @@ import com.bizosys.oneline.util.StringUtils;
 public class IndexReaderTest extends TestCase {
 
 	public static String[] modes = new String[] { "all", "random", "method"};
-	public static String mode = modes[1];  
+	public static String mode = modes[2];  
 	
 	public static void main(String[] args) throws Exception {
 		IndexReaderTest t = new IndexReaderTest();
@@ -69,7 +69,7 @@ public class IndexReaderTest extends TestCase {
 	        
 		} else if  ( modes[2].equals(mode) ) {
 			t.setUp();
-			t.tryOut();
+			t.testDocumentWithManyTermType();
 			t.tearDown();
 		}
 	}
@@ -465,6 +465,82 @@ public class IndexReaderTest extends TestCase {
 		IndexWriter.getInstance().delete(ANONYMOUS, doc2.key,isMultiClient);
 		IndexWriter.getInstance().delete(ANONYMOUS, doc1.key,isMultiClient);
 	}
+	
+	public void testDocumentWithManyTermType() throws Exception  {
+		
+		TermType ttype = TermType.getInstance(isMultiClient);
+		Map<String, Byte> types = new HashMap<String, Byte>();
+		
+		byte typeId = -108;
+		types.put("StudyUniqueId", typeId++);
+		types.put("PatientId", typeId++);
+		types.put("StudyInstance", typeId++);
+		types.put("StudyId", typeId++);
+		types.put("UserUniqueId", typeId++);
+		types.put("ProductCode", typeId++);
+		types.put("AccessionNo", typeId++);
+		types.put("RefPhysicians", typeId++);
+		types.put("PerformedBy", typeId++);
+		types.put("RefStudySequence", typeId++);
+		types.put("AdmitDiagDesc", typeId++);
+		types.put("AddlPatientHistory", typeId++);
+		types.put("patientage", typeId++);
+		types.put("PatientWeight", typeId++);
+		types.put("Modality", typeId++);
+		types.put("StudyStatus", typeId++);
+		types.put("InstName", typeId++);
+		types.put("DeptName", typeId++);
+		types.put("StudyDeleted", typeId++);
+		types.put("StudyRatio", typeId++);
+   		types.put("NumberOfSeries", typeId++);
+		types.put("NumberOfInstance", typeId++);
+		types.put("ClnInfoRemarks", typeId++);
+		types.put("PatientId", typeId++);
+		types.put("patientname", typeId++);
+		types.put("PatientOtherName", typeId++);
+		types.put("EthnicGroup", typeId++);
+		types.put("gender", typeId++);
+		types.put("Comments", typeId++);
+		types.put("Email", typeId++);
+		types.put("Contact1", typeId++);
+		types.put("Contact2", typeId++);
+		types.put("Deleted", typeId++);
+		types.put("GivenName", typeId++);
+		types.put("BloodGroup", typeId++);
+		types.put("mothername", typeId++);
+		types.put("gestationperiod", typeId++);
+		types.put("birthweight", typeId++);
+		types.put("PatientDOB", typeId++);
+
+		ttype.persist(ANONYMOUS, types);
+
+		DocumentType dtype = DocumentType.getInstance();
+		Map<String, Byte> dtypes = new HashMap<String, Byte>();
+		dtypes.put("study", (byte)108);
+		dtype.persist(ANONYMOUS, dtypes);
+		
+		HDocument doc1 = new HDocument(ANONYMOUS);
+		doc1.key = "40";
+		
+		doc1.fields = new ArrayList<Field>();
+		doc1.fields.add(new HField("patientage", "92"));
+		doc1.fields.add(new HField("patientname", "JYOTI 33YRS"));
+		doc1.fields.add(new HField("gender", "F"));
+		doc1.docType = "study";
+		IndexWriter.getInstance().insert(doc1, acc, isMultiClient);
+		
+		System.out.println(ANONYMOUS);
+		QueryResult res1 = IndexReader.getInstance().search(
+			new QueryContext(acc,"JYOTI"));
+		
+		System.out.println(res1.toString());
+		assertNotNull(res1.teasers);
+		assertEquals(1, res1.teasers.length);
+		String f1 = ((DocTeaserWeight)res1.teasers[0]).id;
+		//assertEquals(doc1.key, f1);
+		
+		//IndexWriter.getInstance().delete(ANONYMOUS, doc1.key,isMultiClient);
+	}	
 	
 	public void testAnd() throws Exception  {
 		String id = "ID010";

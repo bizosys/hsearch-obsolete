@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Load CSV/TSV File API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+    <script type="text/javascript">
+        function callMethod() {
+            var hkey=txtHkey.value;
+            var hdocXml=encode(txtHDocument.value);
+            var runplan=txtRunPlan.value.replace(/\n/g, ",");
+            
+            var url= rootUrl + 
+                "?service=search&action=document.load" + 
+                "&hkey=" + hkey + 
+                "&index.runplan=" + runplan + 
+                "&document.prestine=" + hdocXml +
+                "&document.url=" + txtDocumentUrl.value +
+                "&document.type=" + txtDocumentType.value +
+                "&id.prefix=" + txtIdPrefix.value +
+                "&id.column=" + txtIdColumn.value +
+                "&columns.separator=" + txtColumnsSeparator.value +
+                "&columns.format=" + txtColumnsFormat.value +
+                "&columns.nonempty=" + txtColumnsNonEmpty.value +
+                "&columns.title=" + txtColumnsTitle.value +
+                "&columns.preview=" + txtColumnsPreview.value +
+                "&columns.values.allowed=" + encode(txtColumnsValuesAllowed.value) +
+                "&columns.values.max=" + txtColumnsValuesMax.value +
+                "&columns.values.min=" +txtColumnsValuesMin.value +
+                "&columns.indexable=" + txtColumnsIndexable.value +
+                "&index.start=" +txtIndexStart.value +
+                "&index.end=" +txtIndexEnd.value +
+                "&index.preview.xml=" +txtIndexPreviewXml.value +
+                "&index.batch.size=" +txtIndexBatchSize.value ;
+                
+            divReq.innerHTML = "<h2>Click following link to view Formatted XML via GET</h2><a href=\"" + url + "\">" + url + "</a>";
+            
+            xmlData = { 
+                service: "search", 
+                action: "document.load", 
+                hkey: hkey,
+                "document.prestine": txtHDocument.value,
+                "document.url": txtDocumentUrl.value,
+                "document.type": txtDocumentType.value,
+                "id.prefix": txtIdPrefix.value,
+                "id.column": txtIdColumn.value,
+                "columns.separator": txtColumnsSeparator.value,
+                "columns.format": txtColumnsFormat.value,
+                "columns.nonempty": txtColumnsNonEmpty.value,
+                "columns.title": txtColumnsTitle.value,
+                "columns.preview": txtColumnsPreview.value,
+                "columns.values.allowed": txtColumnsValuesAllowed.value,
+                "columns.values.max": txtColumnsValuesMax.value,
+                "columns.values.min":txtColumnsValuesMin.value,
+                "columns.indexable": txtColumnsIndexable.value,
+                "index.runplan":runplan,
+                "index.start":txtIndexStart.value,
+                "index.end":txtIndexEnd.value,
+                "index.preview.xml":txtIndexPreviewXml.value,
+                "index.batch.size":txtIndexBatchSize.value
+            };
+            callAjax(xmlData, divRes, callRes);
+        }
+        
+		function callRes(data) {
+		    showSucess("File Loading Rest API:", data, divRes);
+        }	  
+        
+    </script>
+    
+</head>
+
+<body>
+    <span style="font-size:24px">document.load</span> <br />
+    <a href="index.html">REST API</a> . <a href="#">document.load</a>
+    <br /><br />
+    <hr />
+    Loads a CSV or or any other field sepatated file. The loading happens in real time. 
+    We recommend you to load around 32000 records at one time. 
+    <br />
+    
+    <br /><br />
+
+ <h1>Parameters</h1>
+ 
+ <table style="width:80%">
+    <tr>
+        <td style="width:15%;padding-bottom:4px"><b>Name</b></td>
+        <td style="width:10%;padding-bottom:4px;"><b>Type</b></td>
+        <td style="width:75%;padding-bottom:4px;"><b>Description</b></td>
+    </tr>
+    <tr>
+        <td style="width:15%;vertical-align:top">document.prestine</td>
+        <td style="width:10%;vertical-align:top">XML</td>
+        <td style="width:75%;">
+            The pristine document which will be used to fillup the default values. The
+            access rights, URL and many other default values. <br />
+            For the pristine HDocument format, refer to <a href="document.add.html">document.add</a>.
+        </td>
+    </tr>    
+
+    <tr>
+        <td>document.url</td>
+        <td>URL</td>
+        <td>
+            The place where the csv or tab separated file is loaded which need to be loaded.
+            This is not the URL meta data of HDocument.
+        </td>
+    </tr>    
+    
+    <tr>
+        <td>columns.separator</td>
+        <td>Character</td>
+        <td>
+            The column separator. For csv it is comma. For TSV it is tab.
+            It could be any custom character like [~] , [|] or [ ]
+        </td>
+    </tr>      
+    
+    <tr>
+        <td>columns.format</td>
+        <td>Integer Array</td>
+        <td>
+            It is a comma separated integer array. Number of integers equal to number of fields.
+            Ex, Example : 0,1,2,2,2,0,0,2,2,2,2,1,2,5 where the document has 14 columns
+            <br /><br />
+            The integer representation of various data types are: <br /><br />
+            <table>
+                <tr>
+                    <td style="width:15%;padding-bottom:4px">Data Type</td>
+                    <td style="width:10%;padding-bottom:4px">Code</td>
+                    <td style="width:75%;padding-bottom:4px">Description</td>
+                </tr>
+                <tr>
+                    <td>NONE</td>
+                    <td>0</td>
+                    <td>Unknown</td>
+                </tr>
+                <tr>
+                    <td>NEUMERIC</td>
+                    <td>1</td>
+                    <td>Numbers which could be negative as well as decimal.</td>
+                </tr>
+                <tr>
+                    <td>DECIMAL</td>
+                    <td>2</td>
+                    <td>A Decimal Number</td>
+                </tr>
+                <tr>
+                    <td>ALPHA</td>
+                    <td>3</td>
+                    <td>Contains characters</td>
+                </tr>
+                <tr>
+                    <td>ALPHANEUMERIC</td>
+                    <td>4</td>
+                    <td>Contains a-z characters as well as numbers</td>
+                </tr>
+                <tr>
+                    <td>DATE</td>
+                    <td>5</td>
+                    <td>A date</td>
+                </tr>
+                <tr>
+                    <td>EMAIL</td>
+                    <td>6</td>
+                    <td>An email</td>
+                </tr>
+                <tr>
+                    <td>PHONE</td>
+                    <td>7</td>
+                    <td>A Phone number</td>
+                </tr>
+            </table>
+        </td>
+    </tr>    
+    
+    <tr>
+        <td>columns.nonempty</td>
+        <td>Integer Array</td>
+        <td>
+            Comma separated non empty Column positions. 
+            For example, if 1 and 3 should must contain a value,
+            we need to pass 0,2 to this parameter.
+        </td>
+    </tr>
+    
+    <tr>
+        <td>columns.title</td>
+        <td>Integer Array</td>
+        <td>
+            Comma separated title fields positions. 
+            For example, if 1 and 2 are title fields,
+            we need to pass 0,1 to this parameter.
+        </td>
+    </tr>    
+    
+    <tr>
+        <td>columns.preview</td>
+        <td>Integer Array</td>
+        <td>
+            Comma separated preview fields positions. 
+            For example, if 1 to 9 are preview fields,
+            we need to pass 0,1,2,3,4,5,6,7,8 to this parameter.
+        </td>
+    </tr>     
+    
+    <tr>
+        <td>columns.values.allowed</td>
+        <td></td>
+        <td>
+            Do the field contain the given options.
+            The gender field should always contain MALE or FEMALE.
+            This check ensures these wellness check is performed 
+            before indexing. <br />
+            Example, <br /><br />
+            1st column should have value MALE/FEMALE and 2nd Column Mr/Mrs <br />
+            
+<pre>
+&lt;map&gt;
+  &lt;entry&gt;
+    &lt;int&gt;0&lt;/int&gt;
+    &lt;string-array&gt;
+      &lt;string&gt;MALE&lt;/string&gt;
+      &lt;string&gt;FEMALE&lt;/string&gt;
+    &lt;/string-array&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;int&gt;1&lt;/int&gt;
+    &lt;string-array&gt;
+      &lt;string&gt;Mr&lt;/string&gt;
+      &lt;string&gt;Mrs&lt;/string&gt;
+    &lt;/string-array&gt;
+  &lt;/entry&gt;
+&lt;/map&gt;            
+</pre>
+        </td>
+    </tr>     
+    
+    <tr>
+        <td>columns.values.max</td>
+        <td></td>
+        <td>
+            What are the maximum values allowed for the column
+            Example, <br /><br />
+            1st column should have maximum value of 100 and 2nd Column 12.50 <br />
+            <pre>    
+&lt;map&gt;
+  &lt;entry&gt;
+    &lt;int&gt;0&lt;/int&gt;
+    &lt;double&gt;100&lt;/double&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;int&gt;1&lt;/int&gt;
+    &lt;double&gt;12.50&lt;/double&gt;
+  &lt;/entry&gt;
+&lt;/map&gt;    
+            </pre>
+        </td>
+    </tr>     
+    
+    <tr>
+        <td>columns.values.min</td>
+        <td></td>
+        <td>
+            What are the minimum values allowed for the column
+            Example, <br /><br />
+            1st column should have minimum value of -100 and 2nd Column 5 <br />
+            <pre>    
+&lt;map&gt;
+  &lt;entry&gt;
+    &lt;int&gt;0&lt;/int&gt;
+    &lt;double&gt;-100&lt;/double&gt;
+  &lt;/entry&gt;
+  &lt;entry&gt;
+    &lt;int&gt;1&lt;/int&gt;
+    &lt;double&gt;5&lt;/double&gt;
+  &lt;/entry&gt;
+&lt;/map&gt;    
+            </pre>
+        </td>
+    </tr>         
+
+   <tr>
+        <td>columns.indexable</td>
+        <td>Integer Array</td>
+        <td>
+            Comma separated indexable fields positions. 
+            For example, if we want to index only 4,7,8 position fields
+            we need to pass 4,7,8 to this parameter.
+        </td>
+    </tr>         
+    <tr>
+        <td>id.column</td>
+        <td>Integer</td>
+        <td>
+            Id coulmn position. If this is left blank or given a value of -1,
+            the column values are auto generated. To get uniqueness, it is 
+            better to append it with a id prefix.
+        </td>
+    </tr>        
+    
+    <tr>
+        <td>id.prefix</td>
+        <td>String</td>
+        <td>
+            The prefix which will be used in Document Key field. 
+            This will help it to maintain unique field in case of auto generated ids.
+        </td>
+    </tr>    
+    
+    <tr>
+        <td>index.runplan</td>
+        <td>String</td>
+        <td>
+            Refer to <a href="document.add.html">document.add</a> runplan.  
+        </td>
+    </tr>    
+    
+    <tr>
+        <td>index.start</td>
+        <td>Ineteger</td>
+        <td>
+            From which row we need to start the indexing operation. All above rows are skipped.
+            The counting starts from 0. It is a positive ineteger value. If you have a header row,
+            start from 0 other wise from 1. If we have a big file, we can give a starting position.
+        </td>
+    </tr>    
+    
+    <tr>
+        <td>index.end</td>
+        <td>Ineteger</td>
+        <td>
+            At which row we need to stop the indexing operation. All rows below this are skipped.
+            The row counting starts from 0.
+        </td>
+    </tr>        
+    
+    <tr>
+        <td>index.batch.size</td>
+        <td>Ineteger</td>
+        <td>
+           By default in one batch 300 documents are passed (Regular database rows). 
+           If the records are documents (Web Page), you should process 50 documents per batch.
+        </td>
+    </tr>
+    
+    <tr>
+        <td>index.preview.xml</td>
+        <td>String</td>
+        <td>
+           By default columns are stored in a csv format. The header information is missed. 
+           However, one can store them as XML record in a exploded format of name value.
+           This will consume more space and slow down on loading the results, but all records 
+           will be self described.
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width:15%;">hkey</td>
+        <td style="width:10%;">String</td>
+        <td style="width:75%;">The API Key. If you don't have an account key, You can 
+        <a href="../demos/account_create.html" style="font-size:20px">Create A Key Here.</a></td>
+    </tr>    
+ </table>
+ 
+ <br />
+ <h1>Response</h1>
+ <br />
+ On sucess it returns <br /><br />
+ <div class="greydiv"><b>OK</b>.</div>
+ <br />
+ In case of error, the error message is inside XML. An error message format is, <br />
+ 
+ The Error response format is, 
+ <br /><br />
+ <div class="greydiv" style="width:100%; height:120px">
+    <pre>
+        &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;result&gt;
+            &lt;error&gt;
+                &lt;msg&gt;Failure : SearchService: ...
+            &lt;/error&gt;
+        &lt;/result&gt;
+    </pre>
+ </div>
+ 
+ <br />
+ <h1>See Also</h1>
+ <h3>
+    <a href="document.add.html">document.add</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+    <a href="document.load.html">document.load</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+    <a href="document.addXml.html">document.addXml</a>
+ </h3>
+
+ <br />
+ <h1>Test Console</h1>
+ <br />
+ <table style="border:none;width:90%" class="greydiv">
+    <tr>
+        <td rowspan="2" valign=top style="padding-top:24px">
+            <b>hkey</b> <br />
+            <input id="txtHkey" style="margin-top:8px;width:90%" type="text" value="" /> 
+            <br /><br /><br />
+            <b>HDocument</b> <br />
+            <textarea id="txtHDocument" style="margin-top:8px;" cols="40" rows="13">
+ <hdoc>            
+  <url>http://www.google.com</url>
+ </hdoc>
+            </textarea>
+
+            <br /><br /><br />
+            <b>document.url</b> <br />
+            <input id="txtDocumentUrl" style="margin-top:8px;width:90%" type="text" value="file:///d:/delme/water level.csv" />
+            
+            <br /><br /><br />
+            <b>document.type</b> <br />
+            <input id="txtDocumentType" style="margin-top:8px;width:90%" type="text" value="waterlevel" />
+
+            <br /><br /><br />
+            <b>id.prefix (Optional)</b> <br />
+            <input id="txtIdPrefix" style="margin-top:8px;width:90%" type="text" value="wlv" />
+
+            <br /><br /><br />
+            <b>id.column</b> <br />
+            <input id="txtIdColumn" style="margin-top:8px;width:90%" type="text" />
+
+            <br /><br /><br />
+            <b>columns.separator</b> <br />
+            <input id="txtColumnsSeparator" style="margin-top:8px;width:90%" type="text" value="," />
+
+            <br /><br /><br />
+            <b>columns.format</b> <br />
+            <input id="txtColumnsFormat" style="margin-top:8px;width:90%" type="text" value="0,0,0,0,0,0,0,2,2,2,2,2,2,2" />
+
+            <br /><br /><br />
+            <b>columns.nonempty</b> <br />
+            <input id="txtColumnsNonEmpty" style="margin-top:8px;width:90%" type="text" value="0,1,2" />
+
+            <br /><br /><br />
+            <b>columns.title</b> <br />
+            <input id="txtColumnsTitle" style="margin-top:8px;width:90%" type="text" value="0,1,2,3" />
+
+            <br /><br /><br />
+            <b>columns.preview</b> <br />
+            <input id="txtColumnsPreview" style="margin-top:8px;width:90%" type="text" value="0,1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17" />
+
+            <br /><br /><br />
+            <b>columns.values.allowed</b> <br />
+            <input id="txtColumnsValuesAllowed" style="margin-top:8px;width:90%" type="text" />
+
+            <br /><br /><br />
+            <b>columns.values.max</b> <br />
+            <input id="txtColumnsValuesMax" style="margin-top:8px;width:90%" type="text" />
+
+            <br /><br /><br />
+            <b>columns.values.min</b> <br />
+            <input id="txtColumnsValuesMin" style="margin-top:8px;width:90%" type="text" />
+
+            <br /><br /><br />
+            <b>columns.indexable</b> <br />
+            <input id="txtColumnsIndexable" style="margin-top:8px;width:90%" type="text" value="0,1,2,3" />
+
+            <br /><br /><br />
+            <b>index.start</b> <br />
+            <input id="txtIndexStart" style="margin-top:8px;width:90%" type="text" value="0" />
+
+            <br /><br /><br />
+            <b>index.end</b> <br />
+            <input id="txtIndexEnd" style="margin-top:8px;width:90%" type="text" value="1000"/>
+
+            <br /><br /><br />
+            <b>index.preview.xml</b> <br />
+            <input id="txtIndexPreviewXml" style="margin-top:8px;width:90%" type="text" />
+
+            <br /><br /><br />
+            <b>index.batch.size (Optional)</b> <br />
+            <input id="txtIndexBatchSize" style="margin-top:8px;width:90%" type="text" value="300" />
+
+            <br /><br /><br />
+            <b>index.runplan (Optional)</b> <br />
+            <textarea id="txtRunPlan" style="margin-top:8px;width:90%" cols="40" rows="3"></textarea>
+
+            <br /><br /><br />
+            <input class="restCallButton" type="button" value="Call Method" onclick="callMethod()" />
+
+        </td>
+        <td style="padding:40px; vertical-align:top">
+            <div class="restRequest" id="divReq">
+                <a href="../service.html?service=search&action=document.load&hkey=">
+                    ../service.html?service=search&action=document.load&hkey=.... </a>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding:40px; vertical-align:top">
+            <div class="restResponse" id="divRes">
+                Click "Call Method" to see the response here..
+            </div>
+        </td>
+    </tr>
+    
+ </table>
+ 
+</body>
+</html>
+

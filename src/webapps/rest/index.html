@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body> <div>
+    <h1>HSearch REST API</h1>
+    <br />
+    <hr />
+    <p>
+        The REST API enables you to interact with hadoopsearch web site programmatically
+        via HTTP requests.
+     </p>
+
+    <p>
+        To make requests to the REST API with your API KEY, you requests URLs in the following
+        format:
+    </p>
+    <br />
+    <table style="width:100%">
+        <tr>
+            <td style="width:48%">
+    Either using a GET method <br />
+    <div style="background-color:#dcdcdc">
+    <pre>../service.html?
+        hkey=<b>API KEY</b>&amp;
+        service= [ search | management ]&amp;
+        action=  [ method ]&amp;
+        arg0=value0&amp;
+        arg1=value1
+    </pre>
+    </div>
+            </td>
+            <td style="width:48%">
+    Or a more secure POST method <br />
+    <div style="background-color:#dcdcdc">
+        <b>URL:</b> ../service.html<br /><strong>POST Parameters</strong><br />
+        service=[ search | management ]<br />
+        action=[ method ]<br />
+        hkey=API KEY<br />
+        arg0=value0 arg1=value1
+    </div>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+
+    <p>For example, you can search documents with following REST call:</p>
+    <div style="background-color:#dcdcdc">
+        <a href="../service.html?hkey=50BFB2F8337ADC32FC5866EFF998D608&service=search&action=document.search&query=hello">
+        ../service.html?hkey=50BFB2F8337ADC32FC5866EFF998D608&amp;service=search&amp;action=document.search&amp;query=hello
+        </a>
+    </div>
+    <br />
+</div>
+
+<h2>Administrative Methods (Service = <span style="color: #800000">management</span>)</h2>
+
+    <h3><a href="account.get.html">account.get</a></h3>
+    Gets detail information about the account.
+
+    <h3><a href="account.buckets.set.html">account.buckets.set</a></h3>
+    Allocate space(buckets) for indexing where each bucket keeps 32178 documents or records.
+
+    <h3><a href="account.bucket.truncate.html">account.bucket.truncate</a></h3>
+    Deletes all documents and records inside a bucket.
+
+    <h3><a href="account.truncate.html">account.truncate</a></h3>
+    Deletes all records and documents of an account.
+
+<br /><br />
+<h2>Application Setup Methods (Service = <span style="color: #800000">management</span>)</h2>
+
+    <h3><a href="account.doccodes.get.html">account.doccodes.get</a></h3>
+    Shows all document types for the index.
+
+    <h3><a href="account.doccodes.set.html">account.doccodes.set</a></h3>
+    Allows to map simillar document types. 
+
+    <h3><a href="account.doccodes.append.html">account.doccodes.append</a></h3>
+    Append a new document type to the existing document type list. 
+    
+    <h3><a href="account.termcodes.get.html">account.termcodes.get</a></h3>
+    Shows all document fields.
+
+    <h3><a href="account.termcodes.set.html">account.termcodes.set</a></h3>
+    Allows to map simillar document fields. 
+    
+    <h3><a href="account.termcodes.append.html">account.termcodes.append</a></h3>
+    Append a new field. 
+    
+    <h3><a href="account.fieldweight.get.html">account.fieldweight.get</a></h3>
+    Shows all allocated field weights.
+    
+    <h3><a href="account.fieldweight.set.html">account.fieldweight.set</a></h3>
+    Setup the field weights.
+    
+    <h3><a href="account.fieldweight.append.html">account.fieldweight.append</a></h3>
+    Append a new field weight.
+
+<br /><br /><br />
+<h2>Indexing Methods (Service = <span style="color: #800000">search</span>)</h2>
+    <h3><a href="document.add.html">document.add</a></h3>
+    Add a document to the index in real time.
+    
+    <h3><a href="document.get.html">document.get</a></h3>
+    Refer to document detail using document id.
+    
+    <h3><a href="document.addXml.html">document.addXml</a></h3>
+    Add a XML document to the index where xml elements are extracted and treated as field.
+    
+    <h3><a href="document.load.html">document.load</a></h3>
+    Load a CSV or TSV file to the index in real time.
+    
+    <h3><a href="document.batch.html">document.batch</a></h3>
+    Add list of documents in one go.
+    
+    <h3><a href="document.delete.html">document.delete</a></h3>
+    Delete a document given a document id.
+
+    <h3><a href="document.deletes.html">document.deletes</a></h3>
+    Delete documents in batch for a set of documents.
+
+<br /><br /><br />
+<h2>Searching Methods (Service = <span style="color: #800000">search</span>)</h2>
+    <h3><a href="document.search.html">document.search</a></h3>
+    Search for documents/records. Read details to know more about hsearch search syntax. 
+
+<br /><br /><br />
+<h2>Dictionary Methods (Service = <span style="color: #800000">search</span>)</h2>
+    <h3><a href="dictionary.add.html">dictionary.add</a></h3>
+    Add a word to dictionary with synonums and other details.    
+    
+    <h3><a href="dictionary.lookup.html">dictionary.lookup</a></h3>
+    Lookup for a specific word detail in dictionary.    
+    
+    <h3><a href="dictionary.refresh.html">dictionary.refresh</a></h3>
+    Refresh the dictionary to enable fuzzy search. 
+    
+    <h3><a href="dictionary.list.html">dictionary.list</a></h3>
+    Lists all words maintained in dictionary.
+    
+    <h3><a href="dictionary.addAll.html">dictionary.addAll</a></h3>
+    Add multiple entries to the dictionary.
+    
+    <h3><a href="dictionary.spell.html">dictionary.spell</a></h3>
+    Do a fuzzy search of a word.
+    
+    <h3><a href="dictionary.regex.html">dictionary.regex</a></h3>
+    Perform a regular expression search in the dictionary.
+    
+    <h3><a href="dictionary.delete.html">dictionary.delete</a></h3>
+    Delete a entry from dictionary.
+ 
+</body>
+</html>

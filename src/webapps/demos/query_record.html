@@ -1,0 +1,263 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    var docXmlHeader = "\n<hdoc>" + 
+              "\n  <key>__key__</key>" + 
+              "\n  <title>__title__</title>" + 
+              "\n  <docType>__docType__</docType>" + 
+              "\n  <cacheText>__cachetext__</cacheText>" + 
+              "\n  <fields>";
+  
+        var docXmlFooter = "\n  </fields> \n</hdoc>";
+
+        var fldXml =  "\n      <field>" + 
+              "\n        <name>__name__</name>" + 
+              "\n        <value>__value__</value>" + 
+              "\n        <type>2</type> " + 
+              "\n        <index>true</index>" + 
+              "\n        <analyze>true</analyze>" + 
+              "\n        <store>true</store>" + 
+              "\n    </field>" ;
+              
+        function createField(fldName, fldValue, sampleDoc){
+            var name = jQuery.trim(fldName); 
+	        if ( "" != name ) {
+	            var aField = fldXml.replace("__name__", name);
+	            aField = aField.replace("__value__", fldValue);
+	            return sampleDoc + aField;
+	        }
+	        
+	        return sampleDoc;
+        }      
+	   
+	    function indexProcess() {
+	        var hDocXml = docXmlHeader.replace("__key__", txtId.value);
+	        hDocXml = hDocXml.replace("__title__", txtValue1.value);
+	        hDocXml = hDocXml.replace("__docType__", txtDocType.value);
+	        var cacheText = txtValue1.value + " " + txtValue2.value + " " + txtValue3.value;
+	        hDocXml = hDocXml.replace("__cachetext__", jQuery.trim(cacheText));
+	        
+	        hDocXml = createField(txtField1.value, txtValue1.value, hDocXml);
+	        hDocXml = createField(txtField2.value, txtValue2.value, hDocXml);
+	        hDocXml = createField(txtField3.value, txtValue3.value, hDocXml);
+	        hDocXml =   hDocXml + docXmlFooter; 
+
+	        xmlData = { service: "search", action : "document.add", 
+                            hkey: guestKey,
+	                        hdoc: hDocXml
+                      };
+            callAjax(xmlData, divInsertReq, indexSucess);
+	    }
+	    
+		function indexSucess(data) {
+		    showSucess("Indexing", divInsertReq, data, divInsertRes);
+        }	  
+        
+        
+	    function queryProcess() {
+	        xmlData = { service: "search", action : "document.search", 
+	                        hkey: guestKey,
+	                        query: txtSearch.value
+	                      };
+			callAjax(xmlData, divQueryReq, querySucess);
+	    }
+	    
+		function querySucess(data) {
+            showSucess("Query", divQueryReq, data, divQueryRes);
+        }	            
+        
+	    function deleteProcess() {
+	        xmlData = { service: "search", action : "document.delete", 
+	                        hkey: guestKey,
+	                        key: txtDelId.value
+	                      };
+			callAjax(xmlData, divDeleteReq, deleteSucess);
+	    }
+	    
+		function deleteSucess(data) {
+		    showSucess("Delete", divDeleteReq, data, divDeleteRes);
+        }
+                
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Structured Record Search</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>Step 1 of 3: Index Record with 3 Fields</h3>
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtId">Record Id:</label>
+                    <input type="text" name="txtId" id="txtId" value="X001"  />
+                </div>
+            </fieldset>
+
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDocType">Record Type:</label>
+                    <input type="text" name="txtDocType" id="txtDocType" value="employee"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtField1">Field 1</label>
+                    <input type="text" name="txtField1" id="txtField1" value="roll"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtValue1">Field 1 Value:</label>
+                    <input type="text" name="txtValue1" id="txtValue1" value="N4501"  />
+                </div>
+            </fieldset>
+            
+
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtField2">Field 2</label>
+                    <input type="text" name="txtField2" id="txtField2" value="first name"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtValue2">Field 2 Value:</label>
+                    <input type="text" name="txtValue2" id="txtValue2" value="John"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtField3">Field 3</label>
+                    <input type="text" name="txtField3" id="txtField3" value="last name"  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtValue3">Field 3 Value:</label>
+                    <input type="text" name="txtValue3" id="txtValue3" value="Doe"  />
+                </div>
+            </fieldset>            
+            
+
+            <input type=button onclick="indexProcess()" value="Index" />
+
+            <div class="ui-theme-a"  id="divInsertReq"></div><br />
+            <div class="ui-theme-a"  id="divInsertRes"></div> <br />
+
+	        <h3>Step 2 of 3: Query Indexed Record</h3>
+
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtSearch">Keyword to Find:</label>
+                    <input type="text" name="txtSearch" id="txtSearch" value='typ:employee "first name":john'  />
+                </div>
+            </fieldset>
+                
+            <input type=button onclick="queryProcess()" value="Query" /a>
+            
+            <div class="ui-theme-a"  id="divQueryReq"></div> <br />
+            <div class="ui-theme-a"  id="divQueryRes"></div> <br />
+	        
+	        <h3>Step 3 of 3: Cleanup Index</h3>
+	        
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDelId">Indexed Document Id:</label>
+                    <input type="text" name="txtDelId" id="txtDelId" value=""  />
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="deleteProcess()" value="Delete Document" />
+            
+            <div class="ui-theme-a"  id="divDeleteReq"></div> <br />
+            <div class="ui-theme-a"  id="divDeleteRes"></div> <br />
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+
+				<!-- Indexing -->
+				<li data-role="list-divider">Indexing</li>
+				<li><a data-ajax="false" href="query_basic.html">Document Querying</a></li>
+				<li>Structured Records</li>
+				<li><a data-ajax="false" href="query_xml.html">XML Records</a></li>
+				<li><a data-ajax="false" href="index_document.html">Detail Document Indexing</a></li>
+				<li><a data-ajax="false" href="index_custom.html">Flexible Indexing</a></li>
+				<li><a data-ajax="false" href="index_batch.html">Batch Indexing</a></li>
+
+                <!-- User Experience -->
+				<li data-role="list-divider">User Experience</li>
+				<li><a data-ajax="false" href="result_preview.html">Previews</a></li>
+				<li><a data-ajax="false" href="document_date.html">Special searches</a></li>
+				<li><a data-ajax="false" href="dictionary_simple.html">Did You Mean</a></li>
+
+                <!-- Security -->
+				<li data-role="list-divider">Security</li>
+				<li><a data-ajax="false" href="query_access.html">Access Control</a></li>
+				<li><a data-ajax="false" href="document_team.html">Team Restriction</a></li>
+
+                <!-- Miscillineous -->
+				<li data-role="list-divider">Miscillineous</li>
+				<li><a data-ajax="false" href="dictionary_advanced.html">Dictionary Management</a></li>
+				<li><a data-ajax="false" href="result_amount.html">Search Result Limits</a></li>
+				
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li><a data-ajax="false" href="account_create.html">Create Account</a></li>
+				<li><a data-ajax="false" href="account_update.html">Allocate Buckets</a></li>
+		   </ul>
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

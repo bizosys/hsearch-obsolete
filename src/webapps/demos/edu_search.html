@@ -1,0 +1,705 @@
+﻿<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Kid Safe Search Engine</title>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.1/swfobject.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script> 
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+    <script type="text/javascript" src="edu.js"></script>
+
+    <link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="edu.css" />
+    
+	<script type="text/javascript">
+
+        var VIDEO_WIDTH = 640;
+        var VIDEO_HEIGHT = 390;
+        var VIDEO_AREA_WIDTH = VIDEO_WIDTH * 1.5;
+        var PAGE_SIZE = 15;
+        
+        var resizedVideoWidth = VIDEO_WIDTH;
+        var resizedVideoHeight = VIDEO_HEIGHT;
+        var resizedVideoAreaWidth = VIDEO_AREA_WIDTH;
+        var horizontalLayout = true;
+        
+        var videoIds = new Array(); 	
+        var videoUrls = new Array(); 	
+        var videoTitles = new Array();
+         	
+        var videoSeqLast = 0;
+        var videoSeq = 0;
+        var activeVideoSeq = 0;
+
+        var recommendIds = new Array(); 	
+        var recommendUrls = new Array(); 	
+        var recommendTitles = new Array();
+
+        var clusterTitles = new Array(); 	
+        var clusterCounts = new Array(); 	
+        var clusterIds = new Array(); 
+        var clusterSeq = 0;	
+        
+        var highlightedVideoId = -1;	
+        var highlightedCaptionId = -1;	
+        var highlightedCaptionArea = null;	
+        
+        var videoPrefix1 = null;
+        var videoPrefix2 = null;
+
+        var urlQuery = null;
+        $(document).ready(function() {
+            var urlParams = getUrlVars();
+            urlQuery = urlParams["query"];
+            var age = urlParams["age"];
+            setSelectAge(age);
+            
+            if ( null == urlQuery ) return;
+            if ( urlQuery == "" ) return;
+            urlQuery = urlQuery.replace(/%20/g, " ");
+            txtSearch.value = urlQuery;
+            newQuery();
+        });
+        
+        function setSelectAge(age) {
+            if ( null != age ) {
+                if ( age == "all" ) selectAge.selectedIndex = 0;
+                else if ( age == "kg" ) selectAge.selectedIndex = 1;
+                else if ( age == "primary" ) selectAge.selectedIndex = 2;
+                else if ( age == "middle" ) selectAge.selectedIndex = 3;
+                else if ( age == "high" ) selectAge.selectedIndex = 4;
+                else selectAge.selectedIndex = 0;
+            }
+        }
+        
+        function appendAge(queryString) {
+            if ( selectAge.value.indexOf("all") == -1 ) {
+                queryString = queryString + " age:" + selectAge.value;
+            }
+            return queryString;
+        }
+        
+        function openInNewUrl() {
+            var queryStr = txtSearch.value;
+
+            if ( queryStr == "" ) return;
+            if ( queryStr == urlQuery ) {
+                newQuery();
+                return;
+            }
+            
+            document.location.href = "edu_search.html?query=" + appendAge(queryStr);
+        }
+                
+        function keypress() {   
+            if (event.keyCode == 13) { 
+                openInNewUrl(); 
+                return false; 
+            }        
+        }
+        
+        function newQuery() {
+        
+            var windowWidth = $(window).width();;
+            if ( VIDEO_AREA_WIDTH > windowWidth ) {
+                horizontalLayout = false;
+                var ratio = windowWidth/VIDEO_WIDTH;
+                resizedVideoAreaWidth = windowWidth;
+                resizedVideoWidth = windowWidth - 12;
+                resizedVideoHeight =  VIDEO_HEIGHT * ratio;
+            } else {
+                horizontalLayout = true;
+                resizedVideoAreaWidth = VIDEO_AREA_WIDTH;
+                resizedVideoWidth = VIDEO_WIDTH;
+                resizedVideoHeight =  VIDEO_HEIGHT;
+            }
+            divCluster.style.width = resizedVideoAreaWidth;
+            
+            videoSeq = 0;	
+            videoSeqLast = 0;
+            if ( null != videoIds) videoIds.slice(0);
+            if ( null != videoUrls) videoUrls.slice(0);
+            if ( null != videoTitles) videoTitles.slice(0);
+            
+            activeVideoSeq = 0;
+            if ( null != recommendIds) recommendIds.slice(0);
+            if ( null != recommendUrls ) recommendUrls.slice(0);
+            if ( null != recommendTitles ) recommendTitles.slice(0);
+            
+            clusterSeq = 0;
+            if ( null != clusterTitles) clusterTitles.slice(0);
+            if ( null != clusterCounts) clusterCounts.slice(0);
+            if ( null != clusterIds) clusterIds.slice(0);
+            
+            highlightedVideoId = -1;	
+            highlightedCaptionId = -1;	
+            highlightedCaptionArea = null;	
+            
+            divExplore.innerHTML = "";
+            divCluster.innerHTML = "";
+            
+            videoPrefix1 = "<div class=\"videoimg\" style='width:" + 
+                resizedVideoWidth + "px;height:" + resizedVideoHeight + "px;background-image:url(" ;
+            videoPrefix2 = "\">";
+
+            queryProcess();
+        }
+
+        function queryProcess() {
+        
+            if ( playerDiv ) {
+                stop();
+                playerDiv.style.display = "none" 
+            }
+
+            if ( txtSearch.value.length == 0 ) return;
+            var queryString = txtSearch.value;
+            if ( videoSeq > 0 ) queryString = queryString + " scroll:" + videoSeq;
+            
+            queryString = appendAge(queryString);
+            queryString = queryString + " cluster:nlp dfl:" + PAGE_SIZE ;
+
+            xmlData = { 
+                service: "search", 
+                action : "document.search", 
+                hkey: guestKey,
+                query: queryString
+            };
+            callAjax(xmlData, divAction, querySucess);
+		  
+        }
+        
+        function querySucess(data) {
+            try {
+                var previewHtml = "";
+                if ( videoSeq > 0 ) previewHtml = divQueryRes.innerHTML;
+
+                showSucess(data, divQueryRes);
+                var xml = $.parseXML( data );
+                extractVideos(xml);
+                
+                //Is there any Documents Found.
+                var foundDocs = videoSeq - videoSeqLast;
+                if (foundDocs == 0) {
+                    spellProcess();
+                    return;
+                }
+                
+                extractClusters(xml);
+                
+                divCluster.innerHTML = clustersToHtml();
+                
+                divQueryRes.innerHTML = previewHtml + videosToHtml(videoSeqLast, videoSeq);
+                if ( (videoSeq - videoSeqLast) == PAGE_SIZE ) {
+                    var loadMore = "<center><br /><input data-role=\"button\" type=button onclick=\"queryProcess()\" value=\"Show More Results...\" class=\"moreresult\" /><br /><br /></center>";
+                    divAction.innerHTML = loadMore;
+                } else {
+                    divAction.innerHTML = "";
+                }
+                
+                
+            } catch (error) {
+                document.write("<h2>Error during processing</h2>" + data);
+            }
+
+        }
+        
+        function extractVideos(xml) {
+            videoSeqLast = videoSeq;
+            
+            $(xml).find('doc').each( function(){
+                var id = $(this).find("id").text();
+                var idLen = ( null == id) ? 0 : id.length;
+                if (idLen == -1) return;
+                
+                var url = $(this).find('url').text();
+                url = url.replace("default.jpg", "hqdefault.jpg");
+                var title = $(this).find('title').text();
+                var teaser = decode($(this).find('teaser').text());
+                
+                videoIds[videoSeq] = id;
+                videoUrls[videoSeq] = url;
+                videoTitles[videoSeq] = "<h2>" + title + "</h2><br />" + teaser ;
+                
+                videoSeq++;
+            });
+        }   
+        
+        function videosToHtml(startSeq, endSeq) {
+            var videosHtml = "<table style=\"width:" + resizedVideoAreaWidth + 
+                "px\" class=\"videotable\"><tr class=\"videotr\">";
+            
+            var aVideoHtml = null;
+            for ( var videoCounter=startSeq; videoCounter<endSeq; ) {
+                aVideoHtml = "<td class=\"videotdImg\" >";
+                if ( horizontalLayout ) {
+                    aVideoHtml = aVideoHtml + videoToHtml(videoCounter) + "</td>" + "<td class=\"videotdTeaser\" >" + 
+                    videoToHtmlTeaser(videoCounter) + "</td>" ;
+                } else {
+                    aVideoHtml = aVideoHtml + videoToHtml(videoCounter) + "<br />" + 
+                    videoToHtmlTeaser(videoCounter) + "</td>" ;
+                }
+                    
+                videoCounter++;
+                aVideoHtml = aVideoHtml + "</tr><tr class=\"videotr\">"; 
+                videosHtml = videosHtml + aVideoHtml;
+            } 
+            videosHtml = videosHtml + "</tr></table>";
+            return videosHtml;
+        }
+        
+        function videoToHtml(videoCounter) {
+            var id = videoIds[videoCounter]; 	
+            var url = videoUrls[videoCounter]; 	
+                
+            var aVideoHtml = videoPrefix1 + url + 
+                ");' onclick='main(this,\"" + videoCounter + 
+                "\");'><img class=\"videoplay\" src=\"images/play.gif\"/></div>";
+           return aVideoHtml;
+        }
+
+        function videoToHtmlTeaser(videoCounter) {
+            var title = videoTitles[videoCounter];
+            return "<div class=\"videocaption\" id=\"caption" + 
+            videoCounter + videoPrefix2 + title + 
+            "&nbsp;&nbsp;<a href=\"#\" onclick='getDocumentDetailProcess(\"" + 
+            videoCounter + "\");'>More...</a></div>";
+        }
+        
+// ------------------------                               -----------------------
+// ------------------------   CLUSTER MANAGEMENT    -----------------------
+// ------------------------                               -----------------------
+
+        function extractClusters(xml) {
+            var startSeq = clusterSeq;
+            $(xml).find('f').each( function(){
+		        var title = $(this).find("v").text();
+		        if ( title != "Other Topics" ) {
+			    title = title.replace("&apos", "");
+		            var count = $(this).find("c").text();
+		            var ids = $(this).find("i").text();
+    		        
+		            var isFound = false;
+		            for ( var i=0; i<startSeq; i++) {
+		                if ( clusterTitles[i] == title ) {
+		                    var localI = clusterCounts[i] * 1;
+		                    var countI = count * 1;
+		                    clusterCounts[i] = localI + countI;
+		                    clusterIds[i] = clusterIds[i] + ids;
+		                    isFound = true;
+		                    break;
+		                }
+		            }
+    		        
+		            if ( !isFound) {
+                        clusterTitles[clusterSeq] = title; 	
+                        clusterCounts[clusterSeq] = count; 
+                        clusterIds[clusterSeq] = ids; 
+                        clusterSeq++;	
+		            }		        
+		        }
+		    });
+        }
+                
+        function clustersToHtml() {
+            var clusterHtml = "<table><tr width=\"100%\"><td valign=\"top\">";
+            var labelT = 0;
+            
+            for ( var i=0; i<clusterSeq; i++ ) {
+                if ( labelT % 5 == 0) clusterHtml = clusterHtml + 
+                    "</td><td style=\"width:22px\"></td><td valign=\"top\" >";
+                
+                clusterHtml = clusterHtml + "<br />";
+		        clusterHtml = clusterHtml + "<a href=# onclick=\"clusterPipeSeparatedString('" + 
+		            clusterIds[i] + "','" + clusterTitles[i] + "');\" >" + 
+		            clusterTitles[i] + "</a>(" + clusterCounts[i] + ")";
+
+			    labelT++;
+            }
+            if ( clusterSeq > 0 ) {
+		        clusterHtml = clusterHtml + "<br /><a href=# onclick=\"clusterAll();\" >Show All</a>";
+            } 
+            return clusterHtml + "</td></tr></table>";
+        }
+        
+
+        function clusterPipeSeparatedString(ids, title) {
+            divExplore.innerHTML = "Find About : <a href=\"#\" onclick=\"txtSearch.value = '" + title + "'; openInNewUrl();\">" + title + "</a>";
+            var movieIds = ids.split("|");
+            cluster(movieIds);
+        }
+        
+        function clusterAll() {
+            divExplore.innerHTML = "";
+            var allIds = new Array();
+            for ( var i=0; i<videoSeq; i++ ) {
+                allIds[i] = i;
+            }
+            cluster(allIds);
+        }
+
+        function cluster(movieIds) {
+            var videosHtml = "<table style=\"width:" + resizedVideoAreaWidth + 
+                "px\" class=\"videotable\"><tr class=\"videotr\">";
+
+            var aVideoHtml = null;
+            
+            for(var i = 0; i<movieIds.length;){
+
+                if ( movieIds[i].length == 0 ){
+                    i++;
+                    continue;
+                }
+                var movieId = movieIds[i];
+
+                aVideoHtml = "<td class=\"videotdImg\" >";
+                if ( horizontalLayout ) {
+                    aVideoHtml = aVideoHtml + videoToHtml(movieId) + "</td>" + "<td class=\"videotdTeaser\" >" + 
+                    videoToHtmlTeaser(movieId) + "</td>" ;
+                } else {
+                    aVideoHtml = aVideoHtml + videoToHtml(movieId) + "<br />" + 
+                    videoToHtmlTeaser(movieId) + "</td>" ;
+                }
+                
+                aVideoHtml = aVideoHtml + "</tr><tr class=\"videotr\">"; 
+                videosHtml = videosHtml + aVideoHtml;
+                
+                i++;    
+            }
+            divQueryRes.innerHTML = videosHtml + "</tr></table>";
+            divAction.innerHTML = "";
+        }       
+
+// ------------------------                               -----------------------
+// ------------------------   SPELLING MANAGEMENT    -----------------------
+// ------------------------                               -----------------------
+        
+        function spellProcess() {
+            if ( txtSearch.value.length == 0 ) return;
+            var queryString = txtSearch.value;
+            xmlData = { 
+                service: "search", 
+                action : "dictionary.spell", 
+                hkey: guestKey,
+                word: queryString
+            };
+            callAjax(xmlData, divAction, spellSucess);
+        }         
+        
+        function spellSucess(data) {
+            if ( data == null ) return;
+            if ( data.length == 0 ) return;
+            
+            try {
+                showSucess(data, divQueryRes);
+                var xml = $.parseXML( data );
+                
+                var suggestHtml = "<b>" + txtSearch.value + "</b> is not available. Suggesting: <br /><br />";    
+                $(xml).find('string').each( function(){
+		            var word = $(this).text();
+		            suggestHtml = suggestHtml + 
+		                "<a style=\"margin-right:20px\" href=\"#\" onclick='txtSearch.value=\"" + word + "\"; openInNewUrl();' >" + word + "<word>";
+                });
+                divQueryRes.innerHTML = suggestHtml;
+                divCluster.innerHTML = "";
+                divAction.innerHTML = "";
+                
+            } catch (error) {
+                document.write("<h2>Error During processing.</h2>" + data);
+            }
+        }        
+        
+        
+// ------------------------                               -----------------------
+// ------------------------  MORE INFORMATION ABOUT VIDEO -----------------------
+// ------------------------                               -----------------------
+        
+        function getDocumentDetailProcess(videoSeq) {
+            highlightedVideoId = videoSeq;
+            setTimeout("getDocumentDetailProcessDelayed();",10);
+        }
+        
+        function getDocumentDetailProcessDelayed() {
+            xmlData = { 
+                service: "search", 
+                action : "document.get", 
+                hkey: guestKey,
+                id: videoIds[highlightedVideoId]
+            };
+
+            highlightedCaptionId =  "caption" + highlightedVideoId;
+            highlightedCaptionArea = document.getElementById(highlightedCaptionId);
+            callAjax(xmlData, highlightedCaptionArea, getDocumentDetailSucess);
+        }         
+        
+        function getDocumentDetailSucess(data) {
+            if ( data == null ) return;
+            if ( data.length == 0 ) return;
+            
+            try {
+                showSucess(data, highlightedCaptionArea);
+                var xml = $.parseXML( data );
+                
+                var user = $(xml).find('content').find('channel').text();
+                var desc = decode($(xml).find('teaser').text());
+                
+                highlightedCaptionArea.innerHTML = "<div class=\"videodetail\"> <b>Title:&nbsp;</b>" + 
+                    $(xml).find('title').text() + "<br /><b>Description:&nbsp;</b>" + 
+                    //<a href=\"#\" onclick='lessVideoDesc(\"" + highlightedVideoId + "\");'>Less</a>&nbsp;&nbsp;
+                    desc + "<br /><br /><b>More Videos from <a href=\"#\"" +
+                    " onclick='txtSearch.value=\"channel:" + user + "\"; openInNewUrl();' >" + 
+                    user + "</a><br /></div>";
+                
+                
+            } catch (error) {
+		        alert("Error\n" + error);
+                highlightedCaptionArea.innerHTML = "Error. We are working on this.";
+            }
+        }             
+        
+        var currentY = 0;
+        function lessVideoDesc(videoCounter) {
+            currentY = getScrollTop();
+            var div = document.getElementById("caption" + videoCounter);
+            div.innerHTML = videoToHtmlTeaser(videoCounter,videoTitles[videoCounter]); 
+            setTimeout("window.scrollTo(0,currentY);",0);
+        }
+        
+        
+// ------------------------                       -----------------------
+// ------------------------   VIDEO MANAGEMENT    -----------------------
+// ------------------------                       -----------------------
+        
+         function getAbsolutePosition(element) {
+            var r = { x: element.offsetLeft, y: element.offsetTop };
+            if (element.offsetParent) {
+              var tmp = getAbsolutePosition(element.offsetParent);
+              r.x += tmp.x;
+              r.y += tmp.y;
+            }
+            return r;
+          }
+
+
+        var params = { allowScriptAccess: "always", controls : 0, allowfullscreen: "true", fs: 1 };
+        var atts = { id: "tubeAttribId"};
+        var ytplayer;
+        var suggestDiv;
+        
+        function main(vDiv, videoCounter) {
+            activeVideoSeq = videoCounter;
+            var youtubeId = videoIds[videoCounter];
+            reset();
+            
+            recommendDiv = vDiv.parentNode;
+            recommendDiv.id = ("td" + videoCounter);
+            var cord = getAbsolutePosition(vDiv);
+            playerDiv.style.left = cord.x + "px";
+            playerDiv.style.top = cord.y + "px";
+            
+            playNewVideo(youtubeId);          
+
+        }
+        
+        function onYouTubePlayerReady(playerId) {
+	        ytplayer = document.getElementById("tubeAttribId");
+	        ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
+	        play();
+        }
+        
+        function onytplayerStateChange(newState) {
+            // 0 = ended, 3 == start 2 == scroll
+            var state = ytplayer.getPlayerState();
+            if ( state == 0 )  setTimeout("showRecommendation()",1000);
+        }
+        
+        function reset() {
+            if ( "none" == playerDiv.style.display ) 
+                playerDiv.style.display = "block";
+         }
+        
+
+        function play() {
+	        if(ytplayer) {
+		        ytplayer.playVideo();
+	        }
+        }
+
+        function pause() {
+	        if(ytplayer) {
+		        ytplayer.pauseVideo();
+	        }
+        }
+
+        function stop() {
+            if(ytplayer) ytplayer.stopVideo();
+        }        
+        
+        function playNewVideo(youtubeId) {
+           reset();
+           if ( ytplayer ) {
+                try {
+                    if ( ytplayer.getPlayerState() >= 0 ) {
+                        ytplayer.stopVideo();
+                        ytplayer.clearVideo();
+                    }
+                    ytplayer.loadVideoById(youtubeId,0);
+                    play();
+                } catch(err) {
+                    playerDiv.innerHTML = "<div id=\"youtubeDiv\"></div>";
+                    ytplayer = null;
+                }
+            }
+            
+            if ( !ytplayer) {
+                swfobject.embedSWF("http://www.youtube.com/v/" + youtubeId + 
+                    "?fs=1&allowfullscreen=true&enablejsapi=1&playerapiid=ytplayer", 
+                "youtubeDiv", resizedVideoWidth, resizedVideoHeight, "8", null, null, params, atts);
+            }
+        }     
+
+// ------------------------                               -----------------------
+// ------------------------   RECOMENDATION MANAGEMENT    -----------------------
+// ------------------------                               -----------------------
+        
+        function showRecommendation() {
+            playerDiv.style.display = "none";
+            window.scrollTo(0,getScrollTop());
+            return;
+
+            recommendDiv.innerHTML = "";
+            processRecommendation();
+        }
+        
+        
+        function processRecommendation(channelId) {
+            var queryString = videoTitles[activeVideoSeq];
+            queryString = "dfl:10 " + appendAge(queryString);
+
+            xmlData = { 
+                service: "search", 
+                action : "document.search", 
+                hkey: guestKey,
+                query: queryString
+            };
+            callAjax(xmlData, divAction, recommendationSucess);
+        }
+        
+        function recommendationSucess(data) {
+
+            try {
+                var counter = 0;
+                counter = recommendDiv.id.replace("td","");
+                
+                var tokenHtml = "<div class=\"recommend\" style=\"height:" + resizedVideoHeight + "\">";
+                var xml = $.parseXML( data );
+                var recSeq = recommendIds.length;
+                $(xml).find('doc').each( function(){
+                    var id = $(this).find("id").text();
+                    var idLen = ( null == id) ? 0 : id.length;
+                    if (idLen == -1) return;
+
+                    recommendIds[recSeq] = id;
+                    var url = $(this).find('url').text();
+                    recommendUrls[recSeq] = url.replace("default.jpg", "hqdefault.jpg");
+                    recommendTitles[recSeq] = $(this).find('title').text();
+                    
+                    tokenHtml = tokenHtml + 
+                        ("<img class=\"recommendplay\" onclick=\"recommendReplace('" + 
+                        recommendDiv.id + "','" + 
+                        counter + "','" + 
+                        recSeq + "');\" src=\"" + url + "\">");
+                    recSeq++; 
+                });
+                        
+                recommendDiv.innerHTML = tokenHtml + "</div>";
+            } catch (error) {
+                document.write("<pre>" + error + "</pre><h3>The Response</h3>" + data);
+            }
+
+        }
+        
+        function recommendReplace(tdId, videoSeq, recSeq) {
+            videoIds[videoSeq] = recommendIds[recSeq]; 	
+            videoUrls[videoSeq] = recommendUrls[recSeq];  	
+            videoTitles[videoSeq] = recommendTitles[recSeq];  	
+            
+            document.getElementById(tdId).innerHTML = videoToHtml(videoSeq);
+            playNewVideo(videoIds[videoSeq]);
+        }
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Kid Safe Search</h1>
+	    <a href="kid.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+	     <div>
+            <div data-role="controlgroup" data-type="horizontal" style="margin-left:12px" onkeypress="keypress();">
+	            <center>
+	                <table>
+	                    <tr>
+	                        <td>
+	                            <input style="width:400px" type="text" name="txtSearch" id="txtSearch" onfocus="true" value="" />
+	                        </td>
+	                        <td>
+	                            <select data-type="horizontal" name="selectAge" id="selectAge" data-native-menu="false" >
+		                            <option value="all">All</option>
+		                            <option value="kg">KinderGarten</option>
+		                            <option value="primary">primary</option>
+		                            <option value="middle">Middle</option>
+		                            <option value="high">High</option>
+	                            </select>
+	                        </td>
+	                    </tr>
+	                </table>
+                    
+	                <br />
+                    <input data-role="none" name="btnFind" type=button onclick="openInNewUrl();" value="Find" style="width:100px;height:32px" />
+	            </center>
+            </div>
+
+            
+            <center>
+                <div class="ui-theme-a">
+                    <div id="divCluster" style="text-align:left" />
+                </div> <br />
+                <div data-role="none" id="divExplore"></div> <br />
+                <div class="ui-theme-a"  id="divQueryRes"></div> <br />
+                <div class="ui-theme-a"  id="divAction"></div> <br />
+            </center>
+	                
+	</div><!--/content-primary END -->
+	
+    <div style="float:left;position:absolute;background-color:#00ff00;z-index:10" id="playerDiv">
+        <div id="youtubeDiv"></div>
+    </div>
+	
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

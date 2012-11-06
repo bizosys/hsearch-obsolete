@@ -51,6 +51,16 @@ public class SequenceProcessor implements PipeOut{
 	
 	public SequenceProcessor() {
 	}	
+	
+	private QueryTerm getSqlTermList() {
+		QueryTerm sqlQuery = new QueryTerm();
+		TermList tl = new TermList();
+		tl.docPos = new short[]{18};
+		tl.totalTerms = tl.docPos.length; 
+		sqlQuery.foundIds.put(-9223372036854775807L, tl);
+		
+		return sqlQuery;
+	}
 
 	public void visit(Object objQuery, boolean multiWriter) throws ApplicationFault, SystemFault {
 
@@ -61,7 +71,7 @@ public class SequenceProcessor implements PipeOut{
 		
 		try {
 			List<byte[]> findWithinBuckets = ctx.getBuckets();
-			QueryTerm lastMustQuery = null;
+			QueryTerm lastMustQuery = getSqlTermList();
 			
 			for (List<QueryTerm> step : planner.sequences) {
 				int totalTasks = step.size();

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="service-configuration"
+   name="configuration Service Plug-in"
+   version="1.0.0"
+   provider-name="HSearch Initiative">
+
+   <runtime>
+      <library name="service-configuration.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="extensionpoints"/>
+   </requires>
+
+   <extension id="com.bizosys.hsearch.configuration"
+              name="configuration Service"
+              point="com.bizosys.oneline.services.Service">
+
+      <implementation id="configuration"
+          class="com.bizosys.hsearch.ConfigurationService">
+
+        <parameter name="name" value="search Service"/>
+        <parameter name="logo" value=""/>
+        <parameter name="tags" value="welcome"/>
+        <parameter name="url" value="service/configuration"/>
+      </implementation>
+
+   </extension>
+
+</plugin>

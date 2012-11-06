@@ -1,0 +1,126 @@
+http://localhost/hsearch/index.html
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+service=management&action=account.create&name=Bizosys&detail=Void Space
+
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" ><APIKEY>070B31E514C2A41A23A23352E6BAD2E1</APIKEY>
+</result>	 
+
+#####################################################################################################
+
+
+service=management&action=account.get&hkey=070B31E514C2A41A23A23352E6BAD2E1
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" ><account><name>bizosys</name><active>true</active><buckets><bucket>1</bucket></buckets><cursor>0</cursor><notes>Void Space</notes></account>
+</result>	 
+#####################################################################################################
+
+service=management&action=account.allocate.buckets&buckets=10&hkey=070B31E514C2A41A23A23352E6BAD2E1
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" ><buckets>11</buckets>
+</result>	 
+#####################################################################################################
+service=management&action=account.bucket.detail&bucketid=10&hkey=070B31E514C2A41A23A23352E6BAD2E1
+#####################################################################################################
+
+service=management&action=account.doccodes.get&hkey=070B31E514C2A41A23A23352E6BAD2E1
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" ><codes><doc><type>customer</type><code>-127</code></doc><doc><type>employee</type><code>-128</code></doc></codes>
+</result>
+
+#####################################################################################################
+service=management&action=account.doccodes.set&hkey=070B31E514C2A41A23A23352E6BAD2E1&typecodes=
+<map>
+  <entry>
+    <string>customer</string>
+    <byte>-127</byte>
+  </entry>
+  <entry>
+    <string>employee</string>
+    <byte>-128</byte>
+  </entry>
+</map>
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" >OK
+</result>	 
+#####################################################################################################
+service=management&action=account.termcodes.get&hkey=070B31E514C2A41A23A23352E6BAD2E1
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" ><codes><term><type>XYZ</type><code>112</code></term><term><type>body</type><code>23</code></term></codes>
+</result>	 
+
+
+#####################################################################################################
+service=management&action=account.termcodes.set&hkey=070B31E514C2A41A23A23352E6BAD2E1&typecodes=
+<map>
+  <entry>
+    <string>body</string>
+    <byte>23</byte>
+  </entry>
+  <entry>
+    <string>XYZ</string>
+    <byte>111</byte>
+  </entry>
+</map>
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" >OK
+</result>	 
+
+
+#####################################################################################################
+service=management&action=stopwords.add&stopwords=the,am,i,are,you,will
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" >OK
+</result>	 
+
+
+#####################################################################################################
+service=management&action=stopwords.get
+ 
+<?xml version="1.0" encoding="UTF-8"?><result msgid="" ><words>the
+i
+are
+am
+will
+you
+</words>
+</result>	 
+#####################################################################################################
+service=search&action=get&hkey=070B31E514C2A41A23A23352E6BAD2E1
+#####################################################################################################
+service=search&action=document.add&hkey=070B31E514C2A41A23A23352E6BAD2E1&hdoc=
+<com.bizosys.hsearch.common.HDocument>
+  <key>1</key>
+  <title>Title : </title>
+  <cacheText>Title :  Adabra Cadabra</cacheText>
+  <fields>
+    <com.bizosys.hsearch.common.SField>
+      <index>true</index>
+      <analyze>true</analyze>
+      <store>true</store>
+      <type>2</type>
+      <name>BODY</name>
+      <value>Adabra Cadabra SS</value>
+    </com.bizosys.hsearch.common.SField>
+  </fields>
+  <eastering>12.0</eastering>
+  <northing>23.0</northing>
+  <weight>112</weight>
+  <securityHigh>false</securityHigh>
+  <sentimentPositive>true</sentimentPositive>
+  <locale>en</locale>
+</com.bizosys.hsearch.common.HDocument>
+
+
+
+service=search&action=document.add&hkey=070B31E514C2A41A23A23352E6BAD2E1&hdoc=
+<hdoc>
+  <key>2</key>
+  <title>Hello World</title>
+  <cacheText>Mango</cacheText>
+</hdoc>
+
+
+service=search&action=document.search&hkey=070B31E514C2A41A23A23352E6BAD2E1&query=Mango
+

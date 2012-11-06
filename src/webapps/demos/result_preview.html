@@ -1,0 +1,237 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    
+	    function indexProcess() {
+	        xmlData = { service: "search", action : "document.batch", 
+                        hkey: guestKey,
+                        hdocs: txtDocList.value
+                      };
+		  callAjax(xmlData, divInsertReq, indexSucess);
+	    }
+	    
+		function indexSucess(data) {
+		    showSucess("Indexing", divInsertReq, data, divInsertRes);
+        }	  
+        
+        
+	    function queryProcess() {
+	        xmlData = { service: "search", action : "document.search", 
+	                        hkey: guestKey,
+	                        query: txtSearch.value
+	                      };
+			callAjax(xmlData, divQueryReq, querySucess);
+	    }
+	    
+        function querySucess(data) {
+            showSucess("Query", divQueryReq, data, divQueryRes);
+            var xml = $.parseXML( data ); 
+            var previewXml = "<ul data-role=\"listview\">";
+            
+            $(xml).find('doc').each(function(){
+			var id = $(this).find("id").text();
+			var idLen = ( null == id) ? 0 : id.length;
+			if (idLen > 0) {
+				var title = $(this).find('title').text();
+				var teaser = $(this).find('teaser').text();
+				var preview = $(this).find('preview').text();
+    				
+				preview = preview.replace("data:url,type=img,src=", "<img src=\"http://");
+				preview = preview + "\" />";
+
+				var elemXml = "<li><a href=\"index.html\">";
+				elemXml = elemXml + preview;
+				elemXml = elemXml + "<h3>" + title + "</h3>";
+				elemXml = elemXml + "<p>" + teaser + "</p></a></li>";
+				previewXml = previewXml + elemXml;
+			}
+		});
+			
+		previewXml = previewXml + "</ul>";
+		divQueryRes.innerHTML = previewXml;
+        }	            
+        
+	    function deleteProcess() {
+	        var xmlData = { service: "search", action : "document.deletes", 
+	                        hkey: guestKey,
+	                        keys: txtDelId.value
+	                      };
+			callAjax(xmlData, divDeleteReq, deleteSucess);
+	    }
+	    
+		function deleteSucess(data) {
+		    showSucess("Delete", divDeleteReq, data, divDeleteRes);
+        }        
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Custom preview</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>Step 1 of 3: Index Sample Document</h3>
+		    
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDocList">Documents:</label>
+                    <textarea cols="40" rows="30" name="txtDocList" id="txtDocList">
+<list>
+<hdoc>
+  <key>P001</key>
+  <title>Sky Image</title>
+  <cacheText>This is a image of sky</cacheText>
+  <preview>data:url,type=img,src=im01.thewallpapers.org/wallpapers/2/278/thumb/200_clouds.jpg</preview>
+</hdoc>
+
+<hdoc>
+  <key>P002</key>
+  <title>Falling Star</title>
+  <cacheText>Falling star from the sky</cacheText>
+  <preview>data:url,type=img,src=im01.thewallpapers.org//wallpapers/2/278/thumb/200_falling_star-from-the-sky.jpg</preview>
+</hdoc>
+
+<hdoc>
+  <key>P003</key>
+  <title>Sky at Hawaii</title>
+  <cacheText>Windy day Sky of Hawaii</cacheText>
+  <preview>data:url,type=img,src=im01.thewallpapers.org//wallpapers/2/278/thumb/200_Ala_Moana_Beach_Park,_Oahu,_Hawaii_-_1600x1200_-.jpg</preview>
+</hdoc>
+</list>                    
+                    </textarea>
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="indexProcess()" value="Index" />
+
+            <div class="ui-theme-a"  id="divInsertReq"></div><br />
+            <div class="ui-theme-a"  id="divInsertRes"></div> <br />
+
+	        <h3>Step 2 of 3: Query Indexed Document</h3>
+
+            Picture speaks a thousand words. Teaser may not be sufficient. The 
+            <ul>
+                <li>First page thumbnail of a document</li>
+                <li>Picture of found employee</li>
+                <li>Design diagram of a paper</li>
+                <li>Map of a location</li>
+                <li>Video of an interview</li>
+                <li>Chart of a sales report</li>
+                <li>Table of a analysis</li>
+            </ul>
+            makes the content more immersive. This is facilliated by the 
+            <strong>preview</strong> field which comes along with the teaser texts of the matching results.
+            <br />
+            This text can be interpreted and the result can be shown in various ways for better readability.
+            
+			
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtSearch">Keyword to Find:</label>
+                    <input type="text" name="txtSearch" id="txtSearch" value="sky"  />
+                </div>
+            </fieldset>
+                
+            <input type=button onclick="queryProcess()" value="Query" /a>
+            
+            <div class="ui-theme-a"  id="divQueryReq"></div> <br />
+            <div class="ui-theme-a"  id="divQueryRes"></div> <br />
+	        
+	        <h3>Step 3 of 3: Cleanup Index</h3>
+	        
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtDelId">Indexed Document Id:</label>
+                    <input type="text" name="txtDelId" id="txtDelId" value="P001,P002,P003"  />
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="deleteProcess()" value="Delete Document" />
+            
+            <div class="ui-theme-a"  id="divDeleteReq"></div> <br />
+            <div class="ui-theme-a"  id="divDeleteRes"></div> <br />
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+
+				<!-- Indexing -->
+				<li data-role="list-divider">Indexing</li>
+                <li><a data-ajax="false" href="query_basic.html">Document Querying</a></li>
+				<li><a data-ajax="false" href="query_record.html">Structured Records</a></li>
+				<li><a data-ajax="false" href="query_xml.html">XML Records</a></li>
+				<li><a data-ajax="false" href="index_document.html">Detail Document Indexing</a></li>
+				<li><a data-ajax="false" href="index_custom.html">Flexible Indexing</a></li>
+				<li><a data-ajax="false" href="index_batch.html">Batch Indexing</a></li>
+
+                <!-- User Experience -->
+				<li data-role="list-divider">User Experience</li>
+				<li>Previews</li>
+				<li><a data-ajax="false" href="document_date.html">Special searches</a></li>
+				<li><a data-ajax="false" href="dictionary_simple.html">Did You Mean</a></li>
+
+                <!-- Security -->
+				<li data-role="list-divider">Security</li>
+				<li><a data-ajax="false" href="query_access.html">Access Control</a></li>
+				<li><a data-ajax="false" href="document_team.html">Team Restriction</a></li>
+
+                <!-- Miscillineous -->
+				<li data-role="list-divider">Miscillineous</li>
+				<li><a data-ajax="false" href="dictionary_advanced.html">Dictionary Management</a></li>
+				<li><a data-ajax="false" href="result_amount.html">Search Result Limits</a></li>
+				
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li><a data-ajax="false" href="account_create.html">Create Account</a></li>
+				<li><a data-ajax="false" href="account_update.html">Allocate Buckets</a></li>
+			</ul>
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

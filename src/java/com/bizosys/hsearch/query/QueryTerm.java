@@ -22,6 +22,7 @@ package com.bizosys.hsearch.query;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.bizosys.hsearch.dictionary.DictEntry;
 import com.bizosys.hsearch.index.DocumentType;

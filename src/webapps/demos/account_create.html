@@ -1,0 +1,125 @@
+<!DOCTYPE html> 
+<html> 
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bizosys HSearch</title>
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.mobile.js"></script>
+	<link rel="stylesheet"  href="jquery.mobile.css" />
+    <link rel="stylesheet" href="bizosys.css" />
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+	<script type="text/javascript">
+	    
+	    function onCall() {
+	        var detailInfo = "None";
+	        if ( txtName.value.length > 0 ) detailInfo = "Name :" + txtName.value + "\n";
+	        if ( txtBody.value.length > 0 ) detailInfo = "Purpose :" + txtBody.value;
+	        
+	        xmlData = { service: "management", action : "account.create", 
+                        name: txtEMail.value,
+                        detail: detailInfo
+                      };
+			callAjax(xmlData, divCreateReq, onSucess);
+	    }
+	    
+		function onSucess(data) {
+		    var isError = (data.indexOf("<error>") != -1) ;
+		    if ( isError ) {
+		        divCreateReq.innerHTML = "<h1>Error during processing</h1>";
+                var xml = $.parseXML( data ); 
+                $error = $(xml).find( "error" ); 
+                divCreateRes.innerHTML = "<font color=\"red\">" + $error.text() + "</font>";
+		    } else {
+		        divCreateReq.innerHTML = "<h1>Your API Key</h1>";
+                var xml = $.parseXML( data ); 
+                $title = $(xml).find( "APIKEY" ); 
+                divCreateRes.innerHTML = "<h2>" + $title.text() + "</h2>";
+		    }
+        }	  
+        
+    </script>    
+
+</head> 
+<body> 
+
+<div data-role="page" class="type-interior">
+
+	<div data-role="header" data-theme="e">
+	    <h1>Account Management Console</h1>
+	    <a href="index.html" data-ajax="false" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+        
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<div class="content-primary">
+	        <h3>New Account Registration Form</h3>
+		    
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtName">Name:</label>
+                    <input type="text" name="txtName" id="txtName" value=""  />
+                </div>
+            </fieldset>
+
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtEMail">EMail (*):</label>
+                    <input type="text" name="txtEMail" id="txtEMail" value=""  />
+                </div>
+            </fieldset>
+            
+		    <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="txtBody">About Your Application:</label>
+                    <textarea cols="40" rows="10" name="txtBody" id="txtBody"></textarea>
+                </div>
+            </fieldset>
+            
+            <input type=button onclick="onCall()" value="Create Account" />
+
+            <div class="ui-theme-a"  id="divCreateReq"></div><br />
+            <div class="ui-theme-a"  id="divCreateRes"></div> <br />
+
+	             
+	                
+		</div><!--/content-primary END -->
+
+		<div class="content-secondary">
+	
+			<div id="jqm-homeheader">
+				<h1>
+                    <img src="http://bizosyshsearch.sourceforge.net/hsearch-logo.gif" alt="HSearch - Search as a Service" />
+                </h1>
+				<p>Search as a Service Hosted Platform</p>
+				<p id="hsearch-version">Beta Release</p>
+			</div>
+	
+	
+			<p class="intro"><strong>Welcome.</strong> Browse the HSearch REST API calls and learn all possibilities of using HSearch as your store, search and retrieval space.</p>
+			
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="f">
+				<!-- Querying Mechanism -->
+				<li data-role="list-divider">Management</li>
+				<li>Create Account</li>
+				<li><a data-ajax="false" href="account_update.html">Allocate Buckets</a></li>
+			</ul>
+		</div> <!--content-secondary END -->
+	</div> <!-- /content END-->
+	
+	<div data-role="footer" class="footer-docs" data-theme="e">
+	        <table style="text-align:left;width:100%">
+	            <tr>
+	                <td style="text-align:left;width:50%">&copy; 2011 Bizosys Technologies Private Limited</td>
+	                <td style="text-align:right;width:50%">Contact: Abinasha Karana, abinash@bizosys.com</td>
+	            </tr>
+	        </table>
+	</div>	
+	
+	
+</div><!-- /page -->
+
+</body>
+</html>

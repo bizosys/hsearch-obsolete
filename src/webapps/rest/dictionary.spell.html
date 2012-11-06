@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Dictionary Spell API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+    <script type="text/javascript">
+        function callMethod() {
+            var hkey=txtHkey.value;
+            var url= rootUrl + 
+                "?service=search&action=dictionary.spell&hkey=" + hkey + 
+                "&word=" + txtWord.value;
+                
+            divReq.innerHTML = "<h2>Click following link to view Formatted XML via GET</h2><a href=\"" + url + "\">" + url + "</a>";
+            
+            xmlData = { service: "search", 
+                        action: "dictionary.spell", 
+                        hkey: hkey,
+                        word: txtWord.value
+                      };
+	        callAjax(xmlData, divRes, callRes);
+        }
+        
+		function callRes(data) {
+		    showSucess("Dictinary Spell Rest API:", data, divRes);
+        }	  
+        
+    </script>
+    
+</head>
+
+<body>
+    <span style="font-size:24px">dictionary.spell</span> <br />
+    <a href="index.html">REST API</a> . <a href="#">dictionary.spell</a>
+    <br /><br />
+    <hr />
+        Runs a fuzzy search to find the simillar spelling words. For example a word of <i>bizasys</i>
+        which is a spelling mistake (a instead of o) will get rectified using this API. <br />
+        One can use this in case of no results found hoping it is a fat fingering at user end.
+    <br /><br />
+
+ <h1>Parameters</h1>
+ <br />
+ <table style="width:80%">
+    <tr>
+        <td style="width:15%;padding-bottom:4px;"><b>Name</b></td>
+        <td style="width:10%;padding-bottom:4px;"><b>Type</b></td>
+        <td style="width:75%;padding-bottom:4px;"><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>word</td>
+        <td>String</td>
+        <td>A given word.</td>
+
+    </tr>
+    <tr>
+        <td>hkey</td>
+        <td>String</td>
+        <td>The API Key. If you don't have an account key, You can 
+        <a href="../demos/account_create.html" style="font-size:20px">Create A Key Here.</a></td>
+    </tr>    
+ </table>
+ 
+ <br />
+ <h1>Response</h1>
+ <br />
+ On sucess it returns word listing. The XML format is as below<br /><br />
+ <div class="greydiv" style="height:auto; padding-left:24px">
+ <pre>
+&lt;result&gt;
+    &lt;string&gt;without&lt;/string&gt;
+&lt;/result&gt;
+  </pre>
+ </div>
+ <br />
+ In case of error, the error message is inside XML. An error message format is, <br />
+ 
+ The Error response format is, 
+ <br /><br />
+ <div class="greydiv" style="width:100%; height:120px">
+    <pre>
+        &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+        &lt;result&gt;
+            &lt;error&gt;
+                &lt;msg&gt;Failure : SearchService: ...
+            &lt;/error&gt;
+        &lt;/result&gt;
+    </pre>
+ </div>
+ 
+ <br />
+ <h1>See Also</h1>
+ <h3>
+    <a href="dictionary.add.html">dictionary.add</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.addAll.html">dictionary.addAll</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.list.html">dictionary.list</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.lookup.html">dictionary.lookup</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.refresh.html">dictionary.refresh</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.regex.html">dictionary.regex</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.delete.html">dictionary.delete</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+ </h3>
+  <br />
+ 
+ <h1>Test Console</h1>
+ <br />
+ <table style="border:none;width:90%" class="greydiv">
+    <tr>
+        <td rowspan="2" valign=top style="padding-top:24px">
+            <b>hkey</b> <br />
+            <input id="txtHkey" style="margin-top:8px;width:90%" type="text" value="50BFB2F8337ADC32FC5866EFF998D608" />
+            
+            <br /><br /><br />
+            <b>word</b>
+            <br />
+            <input type=text id="txtWord" value="" />
+            <br /><br /><br />
+
+            <input class="restCallButton" type="button" value="Call Method" onclick="callMethod()" />
+            
+        </td>
+        <td style="padding:40px">
+            <div class="restRequest" id="divReq">
+                <a href="../service.html?service=search&action=dictionary.spell&hkey=">
+                    ../service.html?service=search&action=dictionary.spell&hkey=.... </a>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding:40px">
+            <div class="restResponse" id="divRes">
+                Click "Call Method" to see the response here..
+            </div>
+        </td>
+    </tr>
+    
+ </table>
+ 
+</body>
+</html>
+

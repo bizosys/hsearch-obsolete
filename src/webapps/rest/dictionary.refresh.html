@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Dictionary Refresh API Documentation</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="bizosys.js"></script>    
+
+    <script type="text/javascript">
+        function callMethod() {
+            var hkey=txtHkey.value;
+            var url= rootUrl + "?service=search&action=dictionary.refresh&hkey=" + hkey;
+                
+            divReq.innerHTML = "<h2>Click following link to view Formatted XML via GET</h2><a href=\"" + url + "\">" + url + "</a>";
+            
+            xmlData = { service: "search", 
+                        action: "dictionary.refresh", 
+                        hkey: hkey
+                      };
+	        callAjax(xmlData, divRes, callRes);
+        }
+        
+		function callRes(data) {
+		    showSucess("Dictinary Refresh Rest API:", data, divRes);
+        }	  
+        
+    </script>
+    
+</head>
+
+<body>
+    <span style="font-size:24px">dictionary.refresh</span> <br />
+    <a href="index.html">REST API</a> . <a href="#">dictionary.refresh</a>
+    <br /><br />
+    <hr />
+        Refreshes the fuzzy search repository. A regular lookup of word may show the word
+        where as at interval of 30minutes the fuzzy repository refreshes the word list
+        for fuzzy search. A manual refresh also will make sure latest dictionary shows up
+        in the fuzzy search. 
+    <br /><br />
+
+ <h1>Parameters</h1>
+ <br />
+ <table style="width:80%">
+    <tr>
+        <td style="width:15%;padding-bottom:4px;"><b>Name</b></td>
+        <td style="width:10%;padding-bottom:4px;"><b>Type</b></td>
+        <td style="width:75%;padding-bottom:4px;"><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>hkey</td>
+        <td>String</td>
+        <td>The API Key. If you don't have an account key, You can 
+        <a href="../demos/account_create.html" style="font-size:20px">Create A Key Here.</a></td>
+    </tr>    
+ </table>
+ 
+ <br />
+ <h1>Response</h1>
+ <br />
+ On sucess it returns word refreshing. The XML format is as below<br /><br />
+ <div class="greydiv" style="height:auto; padding-left:24px">
+ <b>OK</b>
+ </div>
+ 
+ <br />
+ <h1>See Also</h1>
+ <h3>
+    <a href="dictionary.add.html">dictionary.add</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.addAll.html">dictionary.addAll</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.lookup.html">dictionary.lookup</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.list.html">dictionary.list</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.spell.html">dictionary.spell</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.regex.html">dictionary.regex</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+
+    <a href="dictionary.delete.html">dictionary.delete</a>
+    &nbsp; <span style="color:#ff0000">|&nbsp; </span> &nbsp;
+ </h3>
+  <br />
+ 
+ <h1>Test Console</h1>
+ <br />
+ <table style="border:none;width:90%" class="greydiv">
+    <tr>
+        <td rowspan="2" valign=top style="padding-top:24px">
+            <b>hkey</b> <br />
+            <input id="txtHkey" style="margin-top:8px;width:90%" type="text" value="50BFB2F8337ADC32FC5866EFF998D608" />
+            
+            <br /><br /><br />
+
+            <input class="restCallButton" type="button" value="Call Method" onclick="callMethod()" />
+            
+        </td>
+        <td style="padding:40px">
+            <div class="restRequest" id="divReq">
+                <a href="../service.html?service=search&action=dictionary.refresh&hkey=">
+                    ../service.html?service=search&action=dictionary.refresh&hkey=.... </a>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td style="padding:40px">
+            <div class="restResponse" id="divRes">
+                Click "Call Method" to see the response here..
+            </div>
+        </td>
+    </tr>
+    
+ </table>
+ 
+</body>
+</html>
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="search"
+   name="Search Service Plug-in"
+   version="1.0.0"
+   provider-name="HSearch Initiative">
+
+   <runtime>
+      <library name="service-search.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="extensionpoints"/>
+   </requires>
+
+   <extension id="com.bizosys.hsearch.search"
+              name="Search Service"
+              point="com.bizosys.oneline.services.Service">
+
+      <implementation id="search"
+                      class="com.bizosys.hsearch.SearchService">
+
+        <parameter name="name" value="Search Service"/>
+        <parameter name="logo" value=""/>
+        <parameter name="tags" value="welcome"/>
+        <parameter name="url" value="service/search"/>
+      </implementation>
+
+   </extension>
+
+</plugin>

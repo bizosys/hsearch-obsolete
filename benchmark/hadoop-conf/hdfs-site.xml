@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+        <property>
+          <name>hadoop.home</name>
+          <value>/mnt/hsearch/hadoop</value>
+        </property>
+
+        <property>
+          <name>metadata.dir</name>
+          <value>/mnt/data/namenode</value>
+          <description>Where the NameNode metadata should be stored</description>
+        </property>
+
+        <property>
+          <name>dfs.data.dir</name>
+          <value>/mnt/data/datanode</value>
+          <description>At which location the data is stored. /data/1,/data/2,/data/3 </description>
+        </property>
+
+        <property>
+          <name>dfs.replication</name>
+          <value>1</value>
+          <description>
+             Clusters closer to the 8-10 node range may want to set dfs.replication to 3. Values higher than 3 are usually not necessary. Individual files which are heavily utilized by a large number of nodes may have their particular replication factor manually adjusted upward independent of the cluster default
+          </description>
+        </property>
+
+        <property>
+          <name>dfs.block.size</name>
+          <value>33554432</value>
+          <description>The NameNode is responsible for managing metadata associated with each block in the HDFS. As the amount of information in the rack scales into the 10's or 100's of TB, this can grow to be quite sizable. The NameNode machine needs to keep the blockmap in RAM to work efficiently. Therefore, at large scale, this machine will require more RAM than other machines in the cluster. The amount of metadata can also be dropped almost in half by doubling the block size: This changes the block size from 64MB (the default) to 128MB, which decreases pressure on the NameNode's memory. On the other hand, this potentially decreases the amount of parallelism that can be achieved, as the number of blocks per file decreases. This means fewer hosts may have sections of a file to offer to MapReduce tasks without contending for disk access. The larger the individual files involved (or the more files involved in the average MapReduce job), the less of an issue this is.
+          </description>
+        </property>
+
+        <property>
+          <name>dfs.namenode.handler.count</name>
+          <value>40</value>
+          <description>With multiple racks of servers, RPC timeouts may become more frequent. The NameNode takes a continual census of DataNodes and their health via heartbeat messages sent every few seconds. A similar timeout mechanism exists on the MapReduce side with the JobTracker. With many racks of machines, they may force one another to timeout because the master node is not handling them fast enough. The following options increase the number of threads on the master machine dedicated to handling RPC's from slave nodes:
+          </description>
+        </property>
+
+        <property>
+          <name>dfs.datanode.handler.count</name>
+          <value>40</value>
+	  <description></description>
+        </property>
+	
+        <property>
+          <name>dfs.datanode.du.reserved</name>
+	  <value>1073741824</value>
+          <description>By default, HDFS does not preserve any free space on the DataNodes; the DataNode service will continue to accept blocks until all free space on the disk is exhausted, which may cause problems. The following setting will require each DataNode to reserve at least 1 GB of space on the drive free before it writes more blocks, which helps preserve system stability
+          </description>
+        </property>
+
+        <property>
+          <name>dfs.datanode.max.xcievers</name>
+          <value>4096</value>
+          <description>Concurrent request exception</description>
+        </property>
+        
+        <property>
+          <name>dfs.hosts.exclude</name>
+          <value>/mnt/hadoop/conf/excludes</value>
+          <description>This property should provide the full path to the excludes file (the actual location of the file is up to you). You should then create an empty file with this name
+          </description>
+        </property>
+
+        <property>
+          <name>dfs.name.dir</name>
+          <value>${metadata.dir}/dfsname</value>
+          <description>This is the path on the local file system of the NameNode instance where the NameNode metadata is stored. It is only used by the NameNode instance to find its information, and does not exist on the DataNodes. If this is a comma-delimited list of directories then the name table is replicated in all of the directories, for redundancy.
+	  </description>
+        </property>
+
+        <property>
+          <name>dfs.name.edits.dir</name>
+          <value>${metadata.dir}/dfsnameedit</value>
+          <description></description>
+        </property>
+
+</configuration>
